@@ -1,11 +1,11 @@
 export default {
   COLORS: {
     BACKGROUND: '#050505',
-    CARDS: '#101010', 
+    CARDS: '#151515',
+    PRIMARY: '#034078',
     SECUNDARY: '#505050',
-    TEXT: '#f2f2f2',
-    ALERT: '#ED4747',
-    ACTION: '#293DEA',
+    ALERT: '#CC2936',
+    TEXT: '#fdfdfd',
   },
 
   FONTS: {
@@ -15,8 +15,8 @@ export default {
   },
 
   SIZES: {
-    TITLE: '26px',
+    TITLE: '32px',
     SUBTITLE: '22px',
-    TEXT: '16px',
+    TEXT: '14px',
   }
 }
