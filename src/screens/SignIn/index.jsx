@@ -42,6 +42,11 @@ export default function SignIn() {
     } else {
       setTokenAuthentication(token);
       AsyncStorage.setItem('tokenAuthentication', JSON.stringify(token));
+      setAlert({
+        show: false,
+        message: '',
+        status: '',
+      })
     }
   }
 
