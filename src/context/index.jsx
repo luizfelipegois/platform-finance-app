@@ -1,5 +1,9 @@
 import { createContext, useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { jwtDecode } from "jwt-decode"
+import "core-js/stable/atob";
+import { userData } from '../services/user';
+import { Alert } from "react-native";
 
 export const Context = createContext({});
 
@@ -11,6 +15,8 @@ export const Provider = ({ children }) => {
     message: '',
     status: ''
   });
+  const [user, setUser] = useState({});
+  const [finance, setFinance] = useState({});
 
   async function loadFromStorage() {
     const token = await AsyncStorage.getItem('tokenAuthentication');
@@ -27,6 +33,25 @@ export const Provider = ({ children }) => {
     AsyncStorage.removeItem('tokenAuthentication');
   }
 
+  async function getUserData() {
+    setLoading(true);
+    const token = tokenAuthentication;
+    const { id } = jwtDecode(token);
+    const response = await userData(id, token);
+    const { datas, email, name } = await response;
+
+    setLoading(false);
+
+    if (response.error) {
+      Alert.alert(response.message, "Usuario Nao Autenticado");
+      signOut();
+    } else {
+      Alert.alert(response.message, "Dados do usuario atualizados");
+      setUser({name, email});
+      setFinance(datas);
+    }
+  }
+
   const values = {
     tokenAuthentication,
     setTokenAuthentication,
@@ -34,7 +59,10 @@ export const Provider = ({ children }) => {
     setLoading,
     alert,
     setAlert,
-    signOut
+    signOut,
+    getUserData,
+    user,
+    finance
   };
 
   useEffect(() => {
