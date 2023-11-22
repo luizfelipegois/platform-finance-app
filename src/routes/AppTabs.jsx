@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { Text } from "react-native";
 import screens from '../screens';
 import theme from '../theme';
+import { Context } from "../context";
 
 const Tab = createBottomTabNavigator();
 
 export default function AppTabs() {
+  const { getUserData } = useContext(Context);
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={{

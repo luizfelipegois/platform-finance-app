@@ -1,9 +1,9 @@
 export default {
   COLORS: {
     BACKGROUND: '#050505',
-    CARDS: '#151515',
+    CARDS: '#101010',
     PRIMARY: '#034078',
-    SECUNDARY: '#505050',
+    SECUNDARY: 'silver',
     ALERT: '#CC2936',
     TEXT: '#fdfdfd',
   },
