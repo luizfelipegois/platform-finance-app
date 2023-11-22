@@ -46,7 +46,6 @@ export const Provider = ({ children }) => {
       Alert.alert(response.message, "Usuario Nao Autenticado");
       signOut();
     } else {
-      Alert.alert(response.message, "Dados do usuario atualizados");
       setUser({name, email});
       setFinance(datas);
     }
