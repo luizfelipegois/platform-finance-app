@@ -31,6 +31,8 @@ export const Provider = ({ children }) => {
   function signOut() {
     setTokenAuthentication(null);
     AsyncStorage.removeItem('tokenAuthentication');
+    setFinance({});
+    setUser({});
   }
 
   async function getUserData() {
