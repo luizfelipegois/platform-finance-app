@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Container } from "./Styled";
-import ChangeEntry from "../../components/ChangeEntry";
 import { Context } from "../../context";
 import { useNavigation } from "@react-navigation/native";
 import { jwtDecode } from "jwt-decode";
-import { changePassword } from "../../services/auth";
+import ChangeEntry from "../../components/ChangeEntry";
+import { changePhone } from "../../services/auth";
 
-export default function ChangePassword() {
+export default function ChangePhone() {
   const [value, setValue] = useState('');
   const { setLoading, tokenAuthentication, setAlert, getUserData } = useContext(Context);
   const navigation = useNavigation();
@@ -15,7 +15,7 @@ export default function ChangePassword() {
     setLoading(true);
     const token = tokenAuthentication;
     const { id } = jwtDecode(token);
-    const response = await changePassword(id, token, value);
+    const response = await changePhone(id, token, value);
     setLoading(false);
 
     if(response.error) {
@@ -40,7 +40,7 @@ export default function ChangePassword() {
 
   return (
     <Container>
-      <ChangeEntry value={value} setValue={setValue} onPress={onPress} type="Senha"/>
+      <ChangeEntry value={value} setValue={setValue} onPress={onPress} type="Phone"/>
     </Container>
   )
 }
