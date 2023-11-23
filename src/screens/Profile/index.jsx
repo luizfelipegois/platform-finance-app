@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Center, NativeBaseProvider, Switch } from "native-base";
+import { Center, NativeBaseProvider, Skeleton, Switch, VStack } from "native-base";
 import { Feather } from '@expo/vector-icons';
 import THEME from '../../theme';
 import { Context } from '../../context';
@@ -8,7 +8,7 @@ import { View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Profile() {
-  const { signOut, user } = useContext(Context);
+  const { signOut, user, loading } = useContext(Context);
   const navigation = useNavigation();
   const datas = [
     {
@@ -20,7 +20,6 @@ export default function Profile() {
       id: 2,
       icon: 'dollar-sign',
       text: 'Minhas Solicitações',
-      onPress: () => navigation.navigate("Minhas Solicitações")
     },
     {
       id: 3,
@@ -36,6 +35,12 @@ export default function Profile() {
     },
     {
       id: 5,
+      icon: 'phone',
+      text: 'Alterar Phone',
+      onPress: () => navigation.navigate("Alterar Phone")
+    },
+    {
+      id: 6,
       icon: 'log-out',
       text: 'Encerrar Sessão',
       onPress: signOut
@@ -45,23 +50,34 @@ export default function Profile() {
   return (
     <NativeBaseProvider>
       <Center bg={THEME.COLORS.BACKGROUND} flex={1} alignItems="center" justifyContent="start">
-        <UserContainerInformation>
-          <Username>{user.name}</Username>
-          <Email>{user.email}</Email>
-        </UserContainerInformation>
+        {
+          loading ? (
+            <Center w="100%">
+              <VStack w="80%" space={3} overflow="hidden" rounded="md" marginTop="50px">
+                <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
+                <Skeleton m="auto" w="50%" h="5" startColor={THEME.COLORS.CARDS} />
+              </VStack>
+            </Center>
+          ) : (
+            <UserContainerInformation>
+              <Username>{user.name}</Username>
+              <Email>{user.email}</Email>
+            </UserContainerInformation>
+          )
+        }
         <List>
           {
             datas.map(({id, icon, text, onPress}) => (
               <ListItem key={id} onPress={onPress}>
                 <View style={{flexDirection: "row", alignItems: "center"}}>
-                  <Feather name={icon} size={22} color={id === 5 ? THEME.COLORS.ALERT : "#f2f2f2"} />
-                  <Text style={{color: id === 5 ? THEME.COLORS.ALERT : "#f2f2f2"}}>{text}</Text>
+                  <Feather name={icon} size={22} color={id === 6 ? THEME.COLORS.ALERT : "#f2f2f2"} />
+                  <Text style={{color: id === 6 ? THEME.COLORS.ALERT : "#f2f2f2"}}>{text}</Text>
                 </View>
                 {
-                  id === 1 && <Switch size="sm" defaultIsChecked={true} />
+                  id === 1 && <Switch size="sm" />
                 }
                 {
-                  (id !== 5 && id !== 1) && <Feather name="chevron-right" size={22} color="white"/>
+                  (id !== 6 && id !== 1) && <Feather name="chevron-right" size={22} color="white"/>
                 }
               </ListItem>
             ))

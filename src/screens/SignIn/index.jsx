@@ -68,7 +68,7 @@ export default function SignIn() {
             <VStack space={3} mt="5">
               <FormControl
                 isInvalid={
-                  alert.message === "User not found" ? true : false
+                  alert.message === "Usuário não encontrado" ? true : false
                 }
               >
                 <FormControl.Label>Email</FormControl.Label>
@@ -78,9 +78,9 @@ export default function SignIn() {
                   placeholder="Digite seu email"
                   color={THEME.COLORS.TEXT}
                   backgroundColor={THEME.COLORS.CARDS}
-                  borderColor={alert.message === "User not found" ? THEME.COLORS.ALERT : 'transparent'}
+                  borderColor={alert.message === "Usuário não encontrado" ? THEME.COLORS.ALERT : 'transparent'}
                   padding={3}
-                  focusOutlineColor={ alert.message === "User not found" ? THEME.COLORS.ALERT : THEME.COLORS.SECUNDARY}
+                  focusOutlineColor={ alert.message === "Usuário não encontrado" ? THEME.COLORS.ALERT : THEME.COLORS.SECUNDARY}
                   value={email}
                   onChangeText={setEmail}
                   placeholderTextColor={THEME.COLORS.SECUNDARY}
@@ -91,7 +91,7 @@ export default function SignIn() {
               </FormControl>
               <FormControl
                 isInvalid={
-                  alert.message === "Incorrect password" ? true : false
+                  alert.message === "Senha incorreta" || alert.message === "Senha é necessária" ? true : false
                 }
               >
                 <FormControl.Label>Senha</FormControl.Label>
@@ -102,9 +102,9 @@ export default function SignIn() {
                   placeholder="Digite sua senha"
                   color={THEME.COLORS.TEXT}
                   backgroundColor={THEME.COLORS.CARDS}
-                  borderColor={alert.message === "Incorrect password" ? THEME.COLORS.ALERT : 'transparent'}
+                  borderColor={alert.message === "Senha incorreta" || alert.message === "Senha é necessária" ? THEME.COLORS.ALERT : 'transparent'}
                   padding={3}
-                  focusOutlineColor={alert.message === "Incorrect password" ? THEME.COLORS.ALERT : THEME.COLORS.SECUNDARY}
+                  focusOutlineColor={alert.message === "Senha incorreta" || alert.message === "Senha é necessária" ? THEME.COLORS.ALERT : THEME.COLORS.SECUNDARY}
                   type={showPassword ? "text" : "password"}
                   InputRightElement={
                     <Pressable onPress={() => setShowPassword(!showPassword)}>
@@ -121,7 +121,7 @@ export default function SignIn() {
                   onChangeText={setPassword}
                 />
                 <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                  Senha incorreta
+                  {alert.message}
                 </FormControl.ErrorMessage>
               </FormControl>
               <Button mt="4" backgroundColor={THEME.COLORS.PRIMARY} onPress={() => login()}>
