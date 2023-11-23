@@ -21,6 +21,7 @@ export default function ProfileStack() {
       <Stack.Screen name="Minhas Solicitações" component={ screens.Requests } />
       <Stack.Screen name="Alterar Email" component={ screens.ChangeEmail } />
       <Stack.Screen name="Alterar Senha" component={ screens.ChangePassword } />
+      <Stack.Screen name="Alterar Phone" component={ screens.ChangePhone } />
     </Stack.Navigator>
   )
 };
