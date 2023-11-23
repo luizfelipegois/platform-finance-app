@@ -4,7 +4,6 @@ import { jwtDecode } from "jwt-decode"
 import "core-js/stable/atob";
 import { userData } from '../services/user';
 import { Alert } from "react-native";
-import { useDisclose } from "native-base";
 
 export const Context = createContext({});
 
