@@ -5,6 +5,7 @@ import SignIn from './SignIn';
 import Requests from './Requests';
 import ChangeEmail from './ChangeEmail';
 import ChangePassword from './ChangePassword';
+import ChangePhone from './ChangePhone';
 
 export default screens = {
   Home,
@@ -13,5 +14,6 @@ export default screens = {
   SignIn,
   Requests,
   ChangeEmail,
-  ChangePassword
+  ChangePassword,
+  ChangePhone,
 };
