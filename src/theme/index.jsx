@@ -3,8 +3,9 @@ export default {
     BACKGROUND: '#050505',
     CARDS: '#101010',
     PRIMARY: '#034078',
-    SECUNDARY: 'silver',
+    SECUNDARY: '#505050',
     ALERT: '#CC2936',
+    SUCCESS: '#2A7F62',
     TEXT: '#fdfdfd',
   },
 

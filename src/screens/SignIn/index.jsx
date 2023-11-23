@@ -62,7 +62,7 @@ export default function SignIn() {
             </Heading>
             <Heading mt="1" _dark={{
             color: "warmGray.200"
-          }} color={THEME.COLORS.TEXT} fontSize={THEME.SIZES.TEXT} fontWeight="bold">
+          }} color={THEME.COLORS.TEXT} fontSize={THEME.SIZES.TEXT} fontWeight="semibold">
               Faça o login para continuar!
             </Heading>
             <VStack space={3} mt="5">
@@ -126,7 +126,7 @@ export default function SignIn() {
               </FormControl>
               <Button mt="4" backgroundColor={THEME.COLORS.PRIMARY} onPress={() => login()}>
                 {
-                  loading ? <Spinner color="silver" /> : "Conectar-se"
+                  loading ? <Spinner color={THEME.COLORS.TEXT} /> : "Conectar-se"
                 }
               </Button>
               <HStack mt="6" justifyContent="center">

@@ -80,7 +80,7 @@ export const Row = styled.View`
 `;
 
 export const RowText = styled.Text`
-  color: ${({ theme }) => theme.COLORS.SECUNDARY};
+  color: ${({ theme }) => theme.COLORS.TEXT};
   width: 25%;
   text-align: center;
 `;
