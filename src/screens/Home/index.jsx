@@ -56,7 +56,7 @@ export default function Home() {
             <CapitalContainer>
               <Capital>{`R$ ${finance.balance}`}</Capital>
               <PercentageText>
-                <Ionicons name="analytics" size={32} color="green" />
+                <Ionicons name="analytics" size={28} color={THEME.COLORS.SUCCESS} />
                 <Text
                   style={{ color: THEME.COLORS.SECUNDARY, marginLeft: 8 }}
                 >{`${finance.yield}% de rendimento total`}</Text>
@@ -149,7 +149,7 @@ export default function Home() {
                     <RowText>{Forex}</RowText>
                     <RowText
                       style={{
-                        color: status === "progress" ? "#F7C548" : "green",
+                        color: status === "progress" ? "#F7C548" : THEME.COLORS.SUCCESS,
                       }}
                     >
                       {status === "progress" ? "Pendente" : "Concluído"}
