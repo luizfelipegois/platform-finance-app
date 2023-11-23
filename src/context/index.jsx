@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode"
 import "core-js/stable/atob";
 import { userData } from '../services/user';
 import { Alert } from "react-native";
+import { useDisclose } from "native-base";
 
 export const Context = createContext({});
 
@@ -17,7 +18,6 @@ export const Provider = ({ children }) => {
   });
   const [user, setUser] = useState({});
   const [finance, setFinance] = useState({});
-
   async function loadFromStorage() {
     const token = await AsyncStorage.getItem('tokenAuthentication');
 
@@ -63,7 +63,7 @@ export const Provider = ({ children }) => {
     signOut,
     getUserData,
     user,
-    finance
+    finance,
   };
 
   useEffect(() => {
