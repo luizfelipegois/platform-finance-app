@@ -3,13 +3,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { Text } from "react-native";
 import screens from '../screens';
+import ProfileStack from "./ProfileStack";
 import theme from '../theme';
 import { Context } from "../context";
 
 const Tab = createBottomTabNavigator();
 
 export default function AppTabs() {
-  const { getUserData } = useContext(Context);
+  const { getUserData, actionsheetOnOpen, setActionsheetOnOpen } = useContext(Context);
 
   useEffect(() => {
     getUserData();
@@ -76,7 +77,7 @@ export default function AppTabs() {
       />
       <Tab.Screen
         name="Perfil"
-        component={ screens.Profile }
+        component={ ProfileStack }
         options={{
           tabBarIcon: ({ size, focused }) => {
             if(focused) {
@@ -91,7 +92,8 @@ export default function AppTabs() {
             }
 
             return <Text style={{color: "#505050", fontSize: 14}}>Perfil</Text>
-          }
+          },
+          headerShown: false
         }}
       />
     </Tab.Navigator>
