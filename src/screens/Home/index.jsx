@@ -46,8 +46,7 @@ export default function Home() {
           <RefreshControl
             refreshing={loading}
             onRefresh={() => getUserData()}
-            tintColor={THEME.COLORS.SECUNDARY}
-            colors={THEME.COLORS.SECUNDARY}
+            tintColor={THEME.COLORS.TEXT}
           />
         }
       >
