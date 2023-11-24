@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "platform-finance-app",
-    "slug": "platform-finance-app",
+    "name": "Luiz & CoTrading",
+    "slug": "luiz-e-co-trading",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -32,6 +32,14 @@
       "eas": {
         "projectId": "be9b6a10-ba6d-441d-a909-ff5adfb502eb"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+        }
+      ]
+    ]
   }
 }
