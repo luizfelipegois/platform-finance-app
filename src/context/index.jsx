@@ -17,13 +17,20 @@ export const Provider = ({ children }) => {
   });
   const [user, setUser] = useState({});
   const [finance, setFinance] = useState({});
+  const [isLocalAuth, setIsLocalAuth] = useState(true);
+
   async function loadFromStorage() {
     const token = await AsyncStorage.getItem('tokenAuthentication');
+    const status = await AsyncStorage.getItem("authenticantionActivated");
 
     if (token) {
       setTokenAuthentication(JSON.parse(token));
     } else {
       signOut();
+    }
+
+    if (status === "true") {
+      setIsLocalAuth(false);
     }
   }
 
@@ -63,6 +70,8 @@ export const Provider = ({ children }) => {
     getUserData,
     user,
     finance,
+    isLocalAuth,
+    setIsLocalAuth
   };
 
   useEffect(() => {
