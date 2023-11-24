@@ -10,7 +10,7 @@ import { Context } from "../context";
 const Tab = createBottomTabNavigator();
 
 export default function AppTabs() {
-  const { getUserData, actionsheetOnOpen, setActionsheetOnOpen } = useContext(Context);
+  const { getUserData } = useContext(Context);
 
   useEffect(() => {
     getUserData();
