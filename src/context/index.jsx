@@ -18,6 +18,7 @@ export const Provider = ({ children }) => {
   const [user, setUser] = useState({});
   const [finance, setFinance] = useState({});
   const [isLocalAuth, setIsLocalAuth] = useState(true);
+  const [showData, setShowData] = useState(false);
 
   async function loadFromStorage() {
     const token = await AsyncStorage.getItem('tokenAuthentication');
@@ -71,7 +72,9 @@ export const Provider = ({ children }) => {
     user,
     finance,
     isLocalAuth,
-    setIsLocalAuth
+    setIsLocalAuth,
+    showData,
+    setShowData
   };
 
   useEffect(() => {

@@ -17,7 +17,7 @@ export default {
 
   SIZES: {
     TITLE: '32px',
-    SUBTITLE: '22px',
-    TEXT: '14px',
+    SUBTITLE: '26px',
+    TEXT: '16px',
   }
 }

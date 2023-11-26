@@ -1,16 +1,17 @@
 import React, { useContext, useEffect } from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather, FontAwesome } from '@expo/vector-icons';
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import screens from '../screens';
 import ProfileStack from "./ProfileStack";
-import theme from '../theme';
+import THEME from '../theme';
 import { Context } from "../context";
+import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
 export default function AppTabs() {
-  const { getUserData } = useContext(Context);
+  const { getUserData, setShowData, showData } = useContext(Context);
 
   useEffect(() => {
     getUserData();
@@ -19,20 +20,21 @@ export default function AppTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerShown: true,
         headerStyle: {
-          backgroundColor: theme.COLORS.BACKGROUND,
+          backgroundColor: THEME.COLORS.BACKGROUND,
           shadowOpacity: 0,
         },
-        headerTintColor: theme.COLORS.TEXT,
+        headerTintColor: THEME.COLORS.TEXT,
+        headerTitleStyle: {
+          fontSize: 26
+        },
         tabBarStyle: {
-          backgroundColor: theme.COLORS.BACKGROUND,
-          borderTopColor: theme.COLORS.BACKGROUND,
-          elevation: 0,
-          position: "absolute",
-          bottom: 0,
+          backgroundColor: THEME.COLORS.BACKGROUND,
+          borderTopColor: THEME.COLORS.BACKGROUND,
         },
         tabBarShowLabel: false,
+        headerTitleAlign: "left",
+        headerShadowVisible: false
       }}
     >
       <Tab.Screen
@@ -53,6 +55,26 @@ export default function AppTabs() {
 
             return <Text style={{color: "#505050", fontSize: 14}}>Investimentos</Text>
           },
+          headerRight: () => (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                borderWidth: 2,
+                borderColor: THEME.COLORS.CARDS,
+                borderRadius: 50,
+                padding: 5,
+                marginRight: 10
+              }}
+            >
+              <Ionicons
+                onPress={() => setShowData((prev) => !prev)}
+                name={showData ? "ios-eye-outline" : "ios-eye-off-outline"}
+                size={26}
+                color="#f2f2f2"
+              />
+            </View>
+          )
         }}
       />
       <Tab.Screen

@@ -1,24 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Container,
-  CapitalContainer,
-  Capital,
-  PercentageText,
-  DetailsContainer,
-  ListContainer,
+  Section,
+  Title,
   SubTitle,
   Text,
-  Value,
-  Table,
-  Columns,
   Column,
-  Rows,
-  Row,
   RowText,
 } from "./Styled";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { Context } from "../../context";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import uuid from "react-native-uuid";
@@ -32,35 +23,67 @@ import {
 } from "native-base";
 
 export default function Home() {
-  const { loading, getUserData, finance } = useContext(Context);
+  const { loading, getUserData, finance, showData } = useContext(Context);
+  const [refreshing, setRefreshing] = useState(false);
 
   chartConfig = {
     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
   };
 
+  const detailsData = [
+    {
+      id: 0,
+      text: "Total de depósitos",
+      value: `R$ ${finance.deposits}`
+    },
+    {
+      id: 1,
+      text: "Total de retiradas",
+      value: `R$ ${finance.withdrawals}`
+    },
+    {
+      id: 2,
+      text: "Lucro Bruto",
+      value: `R$ ${
+        parseFloat(finance.balance) * 1000 -
+        parseFloat(finance.deposits) * 1000
+      }`
+    },
+    {
+      id: 3,
+      text: "Lucro Líquido",
+      value: `R$ ${
+        (parseFloat(finance.balance) * 1000 -
+          parseFloat(finance.deposits) * 1000) *
+        0.75
+      }`
+    }
+  ]
+
   return (
     <Container>
       <ScrollView
         refreshControl={
           <RefreshControl
-            refreshing={loading}
-            onRefresh={() => getUserData()}
+            refreshing={refreshing}
+            onRefresh={() => {
+              setRefreshing(true);
+              setTimeout(() => {
+                setRefreshing(false);
+                getUserData();
+              }, 1000);
+            }}
             tintColor={THEME.COLORS.TEXT}
           />
         }
       >
-        {finance.progress ? (
-          <View>
-            <CapitalContainer>
-              <Capital>{`R$ ${finance.balance}`}</Capital>
-              <PercentageText>
-                <Ionicons name="analytics" size={28} color={THEME.COLORS.SUCCESS} />
-                <Text
-                  style={{ color: THEME.COLORS.SECUNDARY, marginLeft: 8 }}
-                >{`${finance.yield}% de rendimento total`}</Text>
-              </PercentageText>
-            </CapitalContainer>
+        {finance.progress && !loading ? (
+          <>
+            <Section>
+              <Text style={{marginBottom: 5}}>Balanço</Text>
+              <Title>{showData ? `R$ ${finance.balance}` : "**********"}</Title>
+            </Section>
             <PieChart
               data={[
                 {
@@ -107,45 +130,44 @@ export default function Home() {
               backgroundColor={"transparent"}
               avoidFalseZero={false}
             />
-            <DetailsContainer>
+            <Section>
               <SubTitle>Detalhes</SubTitle>
-              <ListContainer>
-                <Text>Total de depósitos</Text>
-                <Value>{`R$ ${finance.deposits}`}</Value>
-              </ListContainer>
-              <ListContainer>
-                <Text>Total de retiradas</Text>
-                <Value>{`R$ ${finance.withdrawals}`}</Value>
-              </ListContainer>
-              <ListContainer>
-                <Text>Lucro Bruto</Text>
-                <Value>{`R$ ${
-                  parseFloat(finance.balance) * 1000 -
-                  parseFloat(finance.deposits) * 1000
-                }`}</Value>
-              </ListContainer>
-              <ListContainer>
-                <Text>Lucro Líquido</Text>
-                <Value>{`R$ ${
-                  (parseFloat(finance.balance) * 1000 -
-                    parseFloat(finance.deposits) * 1000) *
-                  0.75
-                }`}</Value>
-              </ListContainer>
-            </DetailsContainer>
-            <Table>
-              <Columns>
+              {
+                detailsData.map(({id, text, value}) => (
+                  <View style={{marginTop: 20}} key={id}>
+                    <Text>{text}</Text>
+                    <Text style={{color: THEME.COLORS.TEXT, fontWeight: "500", marginTop: 5}}>{showData ? value : "R$ ********"}</Text>
+                  </View>
+                ))
+              }
+            </Section>
+            <View style={{marginTop: 25}}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: THEME.COLORS.CARDS,
+                  borderRadius: 5,
+                  padding: 10
+                }}
+              >
                 <Column>Mês</Column>
                 <Column>CDI</Column>
                 <Column>FOREX</Column>
                 <Column>Status</Column>
-              </Columns>
-              <Rows>
+              </View>
+              <View style={{padding: 10}}>
                 {finance.progress.map(({ name, CDI, Forex, status }) => (
-                  <Row key={uuid.v4()}>
+                  <View
+                    key={uuid.v4()}
+                    style={{
+                      flexDirection: "row",
+                      marginTop: 10,
+                      marginBottom: 10
+                    }}
+                  >
                     <RowText>{name}</RowText>
-                    <RowText>{CDI}</RowText>
-                    <RowText>{Forex}</RowText>
+                    <RowText>{showData ? CDI : "******"}</RowText>
+                    <RowText>{showData ? Forex : "******"}</RowText>
                     <RowText
                       style={{
                         color: status === "progress" ? "#F7C548" : THEME.COLORS.SUCCESS,
@@ -153,71 +175,47 @@ export default function Home() {
                     >
                       {status === "progress" ? "Pendente" : "Concluído"}
                     </RowText>
-                  </Row>
+                  </View>
                 ))}
-              </Rows>
-            </Table>
-          </View>
+              </View>
+            </View>
+          </>
         ) : (
-          <View>
-            <NativeBaseProvider>
-              <Center flex={1} px="0" m="10">
-                <Center w="100%">
-                  <VStack w="80%" space={3} overflow="hidden" rounded="md">
-                    <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-                    <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-                  </VStack>
-                </Center>
-              </Center>
-            </NativeBaseProvider>
-            <NativeBaseProvider>
-              <Center flex={1}>
-                <Center w="100%">
-                  <HStack w="100%" space={5}>
-                    <Skeleton
-                      size="180"
-                      rounded="full"
-                      startColor={THEME.COLORS.CARDS}
-                    />
-                    <VStack w="80%" space={3} overflow="hidden" rounded="md">
-                      <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                      <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                      <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                      <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                      <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                      <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                    </VStack>
-                  </HStack>
-                </Center>
-              </Center>
-            </NativeBaseProvider>
-            <NativeBaseProvider>
-              <Center flex={1} px="0" marginTop="50px">
-                <Center w="100%">
-                  <VStack w="100%">
-                    <Skeleton
-                      w="100%"
-                      h="350"
-                      startColor={THEME.COLORS.CARDS}
-                      rounded="md"
-                    />
-                  </VStack>
-                </Center>
-              </Center>
-            </NativeBaseProvider>
-            <NativeBaseProvider>
-              <Center flex={1} marginTop="40px" marginBottom="100px">
-                <Center w="100%">
-                  <VStack w="100%" space={3} overflow="hidden" rounded="md">
-                    <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-                    <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-                    <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-                    <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-                  </VStack>
-                </Center>
-              </Center>
-            </NativeBaseProvider>
-          </View>
+          <NativeBaseProvider>
+            <VStack w="70%" space={3} mt={50} rounded="md">
+              <Skeleton h="10" w="70%" startColor={THEME.COLORS.CARDS} />
+              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
+            </VStack>
+            <HStack mt={50} w="100%" space={5}>
+              <Skeleton
+                size="180"
+                rounded="full"
+                startColor={THEME.COLORS.CARDS}
+              />
+              <VStack w="80%" space={3} overflow="hidden" rounded="md">
+                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
+                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
+                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
+                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
+                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
+                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
+              </VStack>
+            </HStack>
+            <VStack mt={50} w="100%">
+              <Skeleton
+                w="100%"
+                h="350"
+                startColor={THEME.COLORS.CARDS}
+                rounded="md"
+              />
+            </VStack>
+            <VStack mt={50} w="100%" space={3} overflow="hidden" rounded="md">
+              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
+              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
+              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
+              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
+            </VStack>
+          </NativeBaseProvider>
         )}
       </ScrollView>
     </Container>
