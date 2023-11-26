@@ -12,8 +12,8 @@ import React, { useContext } from "react";
 import { Context } from "../../context";
 import THEME from "../../theme";
 
-export default function ChangeEntry({ value, setValue, onPress, type }) {
-  const { loading, alert, user } = useContext(Context);
+export default function ChangeEntry({ value, setValue, onPress, type, placeholder }) {
+  const { loading, alert } = useContext(Context);
 
   return (
     <NativeBaseProvider>
@@ -28,6 +28,7 @@ export default function ChangeEntry({ value, setValue, onPress, type }) {
               size="md"
               color={THEME.COLORS.TEXT}
               backgroundColor={THEME.COLORS.CARDS}
+              placeholder={placeholder}
               borderColor={
                 alert.show
                   ? THEME.COLORS.ALERT

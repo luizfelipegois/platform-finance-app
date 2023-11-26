@@ -8,7 +8,7 @@ import { changePhone } from "../../services/auth";
 
 export default function ChangePhone() {
   const [value, setValue] = useState('');
-  const { setLoading, tokenAuthentication, setAlert, getUserData } = useContext(Context);
+  const { setLoading, tokenAuthentication, setAlert, getUserData, user } = useContext(Context);
   const navigation = useNavigation();
 
   async function onPress() {
@@ -40,7 +40,7 @@ export default function ChangePhone() {
 
   return (
     <Container>
-      <ChangeEntry value={value} setValue={setValue} onPress={onPress} type="Phone"/>
+      <ChangeEntry value={value} setValue={setValue} onPress={onPress} type="Phone" placeholder={user.phone}/>
     </Container>
   )
 }

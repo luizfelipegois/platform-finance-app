@@ -14,11 +14,13 @@ export default function ProfileStack() {
         headerStyle: {
           backgroundColor: theme.COLORS.BACKGROUND,
         },
-        headerBackTitleVisible: false,
+        headerTitleStyle: {
+          fontSize: 24
+        },
+        headerBackTitleVisible: false
       }}
     >
       <Stack.Screen name="Configurações" component={ screens.Profile } />
-      <Stack.Screen name="Minhas Solicitações" component={ screens.Requests } />
       <Stack.Screen name="Alterar Email" component={ screens.ChangeEmail } />
       <Stack.Screen name="Alterar Senha" component={ screens.ChangePassword } />
       <Stack.Screen name="Alterar Phone" component={ screens.ChangePhone } />

@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function ChangeEmail() {
   const [value, setValue] = useState('');
-  const { setLoading, tokenAuthentication, setAlert, getUserData } = useContext(Context);
+  const { setLoading, tokenAuthentication, setAlert, getUserData, user } = useContext(Context);
   const navigation = useNavigation();
 
   async function onPress() {
@@ -40,7 +40,7 @@ export default function ChangeEmail() {
 
   return (
     <Container>
-      <ChangeEntry value={value} setValue={setValue} onPress={onPress} type="Email"/>
+      <ChangeEntry value={value} setValue={setValue} onPress={onPress} type="Email" placeholder={user.email}/>
     </Container>
   )
 }
