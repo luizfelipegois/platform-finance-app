@@ -47,7 +47,7 @@ export const Provider = ({ children }) => {
     const token = tokenAuthentication;
     const { id } = jwtDecode(token);
     const response = await userData(id, token);
-    const { datas, email, name } = await response;
+    const { datas, email, name, phone } = await response;
 
     setLoading(false);
 
@@ -55,7 +55,7 @@ export const Provider = ({ children }) => {
       Alert.alert(response.message, "Usuario Nao Autenticado");
       signOut();
     } else {
-      setUser({name, email});
+      setUser({name, email, phone});
       setFinance(datas);
     }
   }

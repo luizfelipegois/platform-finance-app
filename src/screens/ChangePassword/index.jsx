@@ -40,7 +40,7 @@ export default function ChangePassword() {
 
   return (
     <Container>
-      <ChangeEntry value={value} setValue={setValue} onPress={onPress} type="Senha"/>
+      <ChangeEntry value={value} setValue={setValue} onPress={onPress} type="Senha" placeholder="Digite sua nova senha"/>
     </Container>
   )
 }
