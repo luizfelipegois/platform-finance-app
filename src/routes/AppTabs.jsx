@@ -26,7 +26,7 @@ export default function AppTabs() {
         },
         headerTintColor: THEME.COLORS.TEXT,
         headerTitleStyle: {
-          fontSize: 26
+          fontSize: 24
         },
         tabBarStyle: {
           backgroundColor: THEME.COLORS.BACKGROUND,

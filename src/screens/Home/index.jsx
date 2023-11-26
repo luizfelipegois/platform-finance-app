@@ -80,7 +80,7 @@ export default function Home() {
       >
         {finance.progress && !loading ? (
           <>
-            <Section>
+            <Section style={{marginTop: 30}}>
               <Text style={{marginBottom: 5}}>Balanço</Text>
               <Title>{showData ? `R$ ${finance.balance}` : "**********"}</Title>
             </Section>
@@ -142,12 +142,14 @@ export default function Home() {
               }
             </Section>
             <View style={{marginTop: 25}}>
+              <SubTitle>Histórico</SubTitle>
               <View
                 style={{
                   flexDirection: "row",
                   backgroundColor: THEME.COLORS.CARDS,
                   borderRadius: 5,
-                  padding: 10
+                  padding: 10,
+                  marginTop: 20
                 }}
               >
                 <Column>Mês</Column>
