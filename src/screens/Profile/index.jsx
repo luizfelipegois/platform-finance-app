@@ -3,54 +3,49 @@ import { Center, NativeBaseProvider, Skeleton, VStack } from "native-base";
 import { Feather } from '@expo/vector-icons';
 import THEME from '../../theme';
 import { Context } from '../../context';
-import { Username, Email, UserContainerInformation, List, ListItem, Text } from './Styled';
-import { Alert, Switch, View } from "react-native";
+import { SubTitle, ListItem, Text } from './Styled';
+import { Alert, ScrollView, Switch, View, RefreshControl } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as LocalAuthentication from 'expo-local-authentication';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Profile() {
-  const { signOut, user, loading } = useContext(Context);
+  const { signOut, user, loading, getUserData } = useContext(Context);
   const [type, setType] = useState('');
   const [isCompatible, setIsCompatible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
   const datas = [
     {
-      id: 1,
+      id: 0,
       icon: 'key',
       text: `Ativar ${type}`,
       show: isCompatible,
     },
     {
-      id: 2,
-      icon: 'dollar-sign',
-      text: 'Minhas Solicitações',
-      show: true,
-    },
-    {
-      id: 3,
+      id: 1,
       icon: 'at-sign',
       text: 'Alterar Email',
       onPress: () => navigation.navigate("Alterar Email"),
       show: true,
     },
     {
-      id: 4,
+      id: 2,
       icon: 'lock',
       text: 'Alterar Senha',
       onPress: () => navigation.navigate("Alterar Senha"),
       show: true,
     },
     {
-      id: 5,
+      id: 3,
       icon: 'phone',
       text: 'Alterar Phone',
       onPress: () => navigation.navigate("Alterar Phone"),
       show: true,
     },
     {
-      id: 6,
+      id: 4,
       icon: 'log-out',
       text: 'Encerrar Sessão',
       onPress: signOut,
@@ -94,51 +89,69 @@ export default function Profile() {
   }, []);
 
   return (
-    <NativeBaseProvider>
-      <Center bg={THEME.COLORS.BACKGROUND} flex={1} alignItems="center" justifyContent="start">
-        {
-          loading ? (
-            <Center w="100%">
-              <VStack w="80%" space={3} overflow="hidden" rounded="md" marginTop="50px">
-                <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-                <Skeleton m="auto" w="50%" h="5" startColor={THEME.COLORS.CARDS} />
-              </VStack>
-            </Center>
-          ) : (
-            <UserContainerInformation>
-              <Username>{user.name}</Username>
-              <Email>{user.email}</Email>
-            </UserContainerInformation>
-          )
+    <View style={{flex: "1", backgroundColor: THEME.COLORS.BACKGROUND}}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              setRefreshing(true);
+              setTimeout(() => {
+                setRefreshing(false);
+                getUserData();
+              }, 1000);
+            }}
+            tintColor={THEME.COLORS.TEXT}
+          />
         }
-        <List>
-          {
-            datas.map(({id, icon, text, onPress, show}) => (
-              show && (
-                <ListItem key={id} onPress={onPress}>
-                  <View style={{flexDirection: "row", alignItems: "center"}}>
-                    <Feather name={icon} size={22} color={id === 6 ? THEME.COLORS.ALERT : "#f2f2f2"} />
-                    <Text style={{color: id === 6 ? THEME.COLORS.ALERT : "#f2f2f2"}}>{text}</Text>
-                  </View>
-                  {
-                    id === 1 && 
-                      <Switch
-                        trackColor={{false: THEME.COLORS.SECUNDARY, true: THEME.COLORS.SUCCESS}}
-                        thumbColor={isEnabled ? THEME.COLORS.TEXT : THEME.COLORS.TEXT}
-                        ios_backgroundColor={THEME.COLORS.SECUNDARY}
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                      />
-                  }
-                  {
-                    (id !== 6 && id !== 1) && <Feather name="chevron-right" size={22} color="white"/>
-                  }
-                </ListItem>
+      >
+        <NativeBaseProvider>
+          <Center bg={THEME.COLORS.BACKGROUND} flex={1} alignItems="center" justifyContent="start">
+            {
+              loading ? (
+                <Center w="100%">
+                  <VStack w="80%" space={3} overflow="hidden" rounded="md" marginTop="50px">
+                    <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
+                    <Skeleton m="auto" w="50%" h="5" startColor={THEME.COLORS.CARDS} />
+                  </VStack>
+                </Center>
+              ) : (
+                <View style={{alignItems: "center", marginTop: 50}}>
+                  <SubTitle>{user.name}</SubTitle>
+                  <Text style={{marginTop: 5}}>{user.email}</Text>
+                </View>
               )
-            ))
-          }
-        </List>
-      </Center>
-    </NativeBaseProvider>
+            }
+            <View style={{marginTop: 50, width: "100%"}}>
+              {
+                datas.map(({id, icon, text, onPress, show}) => (
+                  show && (
+                    <ListItem key={id} onPress={onPress}>
+                      <View style={{flexDirection: "row", alignItems: "center"}}>
+                        <Feather name={icon} size={22} color={id === 4 ? THEME.COLORS.ALERT : "#f2f2f2"} />
+                        <Text style={{color: id === 4 ? THEME.COLORS.ALERT : "#f2f2f2", marginLeft: 10}}>{text}</Text>
+                      </View>
+                      {
+                        id === 0 && 
+                          <Switch
+                            trackColor={{false: THEME.COLORS.SECUNDARY, true: THEME.COLORS.SUCCESS}}
+                            thumbColor={isEnabled ? THEME.COLORS.TEXT : THEME.COLORS.TEXT}
+                            ios_backgroundColor={THEME.COLORS.SECUNDARY}
+                            onValueChange={toggleSwitch}
+                            value={isEnabled}
+                          />
+                      }
+                      {
+                        (id !== 4 && id !== 0) && <Feather name="chevron-right" size={22} color="white"/>
+                      }
+                    </ListItem>
+                  )
+                ))
+              }
+            </View>
+          </Center>
+        </NativeBaseProvider>
+      </ScrollView>
+    </View>
   )
 }
