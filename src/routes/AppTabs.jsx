@@ -1,12 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { Text, View } from "react-native";
 import screens from '../screens';
 import ProfileStack from "./ProfileStack";
 import THEME from '../theme';
 import { Context } from "../context";
-import { Ionicons } from '@expo/vector-icons';
+import Requests from "../screens/Requests";
 
 const Tab = createBottomTabNavigator();
 
@@ -75,6 +75,27 @@ export default function AppTabs() {
               />
             </View>
           )
+        }}
+      />
+      <Tab.Screen
+        name="Levantamentos"
+        component={ Requests }
+        options={{
+          tabBarIcon: ({ size, focused }) => {
+            if(focused) {
+              return<Ionicons name="ios-cash-outline" size={size} color="#f2f2f2" />
+            }
+
+            return <Ionicons name="ios-cash-outline" size={size} color="#505050" />
+          },
+          tabBarLabel: ({ focused}) => {
+            if(focused) {
+              return <Text style={{color: "#f2f2f2", fontSize: 14}}>Perfil</Text>
+            }
+
+            return <Text style={{color: "#505050", fontSize: 14}}>Perfil</Text>
+          },
+          headerShown: true
         }}
       />
       <Tab.Screen
