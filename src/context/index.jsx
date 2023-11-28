@@ -17,6 +17,7 @@ export const Provider = ({ children }) => {
   });
   const [user, setUser] = useState({});
   const [finance, setFinance] = useState({});
+  const [withdrawals, setWithdrawals] = useState([]);
   const [isLocalAuth, setIsLocalAuth] = useState(true);
   const [showData, setShowData] = useState(false);
 
@@ -47,7 +48,7 @@ export const Provider = ({ children }) => {
     const token = tokenAuthentication;
     const { id } = jwtDecode(token);
     const response = await userData(id, token);
-    const { datas, email, name, phone } = await response;
+    const { datas, email, name, phone, requests } = await response;
 
     setLoading(false);
 
@@ -57,6 +58,7 @@ export const Provider = ({ children }) => {
     } else {
       setUser({name, email, phone});
       setFinance(datas);
+      setWithdrawals(requests);
     }
   }
 
@@ -74,7 +76,8 @@ export const Provider = ({ children }) => {
     isLocalAuth,
     setIsLocalAuth,
     showData,
-    setShowData
+    setShowData,
+    withdrawals
   };
 
   useEffect(() => {
