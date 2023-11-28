@@ -138,12 +138,13 @@ export default function News() {
   }, [])
 
   return (
-    <TabView
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-      renderTabBar={renderTabBar}
-    />
+    // <TabView
+    //   navigationState={{ index, routes }}
+    //   renderScene={renderScene}
+    //   onIndexChange={setIndex}
+    //   initialLayout={{ width: layout.width }}
+    //   renderTabBar={renderTabBar}
+    // />
+    <Container></Container>
   )
 }
