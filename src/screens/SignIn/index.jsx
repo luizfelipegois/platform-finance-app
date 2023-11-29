@@ -52,17 +52,17 @@ export default function SignIn() {
 
   return (
     <NativeBaseProvider>
-      <Center bg={THEME.COLORS.BACKGROUND} flex={1} px="3">
+      <Center bg={THEME.COLORS.BLACK} flex={1} px="3">
         <Center w="100%">
           <Box safeArea p="2" py="8" w="100%" maxW="100%">
-            <Heading fontSize={THEME.SIZES.TITLE} fontWeight="bold" color={THEME.COLORS.TEXT} _dark={{
+            <Heading fontSize={THEME.SIZES.TITLE} fontWeight="bold" color={THEME.COLORS.WHITE} _dark={{
             color: "warmGray.50"
           }}>
               Seja bem-vindo
             </Heading>
             <Heading mt="1" _dark={{
             color: "warmGray.200"
-          }} color={THEME.COLORS.TEXT} fontSize={THEME.SIZES.TEXT} fontWeight="semibold">
+          }} color={THEME.COLORS.WHITE} fontSize={THEME.SIZES.TEXT} fontWeight="semibold">
               Faça o login para continuar!
             </Heading>
             <VStack space={3} mt="5">
@@ -76,14 +76,14 @@ export default function SignIn() {
                   variant="filled"
                   size="md"
                   placeholder="Digite seu email"
-                  color={THEME.COLORS.TEXT}
-                  backgroundColor={THEME.COLORS.CARDS}
+                  color={THEME.COLORS.WHITE}
+                  backgroundColor={THEME.COLORS.BLACK_LIGHT}
                   borderColor={alert.message === "Usuário não encontrado" ? THEME.COLORS.ALERT : 'transparent'}
                   padding={3}
-                  focusOutlineColor={ alert.message === "Usuário não encontrado" ? THEME.COLORS.ALERT : THEME.COLORS.SECUNDARY}
+                  focusOutlineColor={ alert.message === "Usuário não encontrado" ? THEME.COLORS.ALERT : THEME.COLORS.BLACK_LIGHT}
                   value={email}
                   onChangeText={setEmail}
-                  placeholderTextColor={THEME.COLORS.SECUNDARY}
+                  placeholderTextColor={THEME.COLORS.BLACK_LIGHT}
                 />
                 <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                   Email inválido
@@ -96,15 +96,15 @@ export default function SignIn() {
               >
                 <FormControl.Label>Senha</FormControl.Label>
                 <Input
-                  placeholderTextColor={THEME.COLORS.SECUNDARY}
+                  placeholderTextColor={THEME.COLORS.BLACK_LIGHT}
                   variant="filled"
                   size="md"
                   placeholder="Digite sua senha"
-                  color={THEME.COLORS.TEXT}
-                  backgroundColor={THEME.COLORS.CARDS}
+                  color={THEME.COLORS.WHITE}
+                  backgroundColor={THEME.COLORS.BLACK_LIGHT}
                   borderColor={alert.message === "Senha incorreta" || alert.message === "Senha é necessária" ? THEME.COLORS.ALERT : 'transparent'}
                   padding={3}
-                  focusOutlineColor={alert.message === "Senha incorreta" || alert.message === "Senha é necessária" ? THEME.COLORS.ALERT : THEME.COLORS.SECUNDARY}
+                  focusOutlineColor={alert.message === "Senha incorreta" || alert.message === "Senha é necessária" ? THEME.COLORS.ALERT : THEME.COLORS.BLACK_LIGHT}
                   type={showPassword ? "text" : "password"}
                   InputRightElement={
                     <Pressable onPress={() => setShowPassword(!showPassword)}>
@@ -124,13 +124,13 @@ export default function SignIn() {
                   {alert.message}
                 </FormControl.ErrorMessage>
               </FormControl>
-              <Button mt="4" backgroundColor={THEME.COLORS.PRIMARY} onPress={() => login()}>
+              <Button mt="4" backgroundColor={THEME.COLORS.BLACK_LIGHT} onPress={() => login()}>
                 {
-                  loading ? <Spinner color={THEME.COLORS.TEXT} /> : "Conectar-se"
+                  loading ? <Spinner color={THEME.COLORS.WHITE} /> : "Conectar-se"
                 }
               </Button>
               <HStack mt="6" justifyContent="center">
-                <Text fontSize="sm" color={THEME.COLORS.SECUNDARY} _dark={{
+                <Text fontSize="sm" color={THEME.COLORS.BLACK_LIGHT} _dark={{
                 color: "warmGray.200"
               }}>
                   Luiz & cotrading 2023

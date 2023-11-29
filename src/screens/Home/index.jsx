@@ -35,31 +35,26 @@ export default function Home() {
     {
       id: 0,
       text: "Total de depósitos",
-      value: `R$ ${finance.deposits}`
+      value: finance.deposits ? parseFloat(finance.deposits.replace(/\./g, '')) : "",
     },
     {
       id: 1,
       text: "Total de retiradas",
-      value: `R$ ${finance.withdrawals}`
+      value: parseFloat(finance.withdrawals),
     },
     {
       id: 2,
       text: "Lucro Bruto",
-      value: `R$ ${
-        parseFloat(finance.balance) * 1000 -
-        parseFloat(finance.deposits) * 1000
-      }`
+      value: parseFloat(finance.balance) * 1000 - parseFloat(finance.deposits) * 1000,
     },
     {
       id: 3,
       text: "Lucro Líquido",
-      value: `R$ ${
-        (parseFloat(finance.balance) * 1000 -
-          parseFloat(finance.deposits) * 1000) *
-        0.75
-      }`
-    }
-  ]
+      value: (parseFloat(finance.balance) * 1000 -
+      parseFloat(finance.deposits) * 1000) *
+    0.75,
+    },
+  ];
 
   return (
     <Container>
@@ -74,14 +69,14 @@ export default function Home() {
                 getUserData();
               }, 1000);
             }}
-            tintColor={THEME.COLORS.TEXT}
+            tintColor={THEME.COLORS.WHITE}
           />
         }
       >
         {finance.progress && !loading ? (
           <>
-            <Section style={{marginTop: 30}}>
-              <Text style={{marginBottom: 5}}>Balanço</Text>
+            <Section style={{ marginTop: 30 }}>
+              <Text style={{ marginBottom: 5 }}>Balanço</Text>
               <Title>{showData ? `R$ ${finance.balance}` : "**********"}</Title>
             </Section>
             <PieChart
@@ -132,24 +127,34 @@ export default function Home() {
             />
             <Section>
               <SubTitle>Detalhes</SubTitle>
-              {
-                detailsData.map(({id, text, value}) => (
-                  <View style={{marginTop: 20}} key={id}>
-                    <Text>{text}</Text>
-                    <Text style={{color: THEME.COLORS.TEXT, fontWeight: "500", marginTop: 5}}>{showData ? value : "R$ ********"}</Text>
-                  </View>
-                ))
-              }
+              {detailsData.map(({ id, text, value }) => (
+                <View style={{ marginTop: 20 }} key={id}>
+                  <Text style={{color: THEME.COLORS.GRAY}}>{text}</Text>
+                  <Text
+                    style={{
+                      color: THEME.COLORS.WHITE,
+                      fontWeight: "500",
+                      marginTop: 5,
+                      fontSize: 18
+                    }}
+                  >
+                    {showData ? value.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }) : "R$ ********"}
+                  </Text>
+                </View>
+              ))}
             </Section>
-            <View style={{marginTop: 25}}>
+            <View style={{ marginTop: 25 }}>
               <SubTitle>Histórico</SubTitle>
               <View
                 style={{
                   flexDirection: "row",
-                  backgroundColor: THEME.COLORS.CARDS,
+                  backgroundColor: THEME.COLORS.BLACK_LIGHT,
                   borderRadius: 5,
                   padding: 10,
-                  marginTop: 20
+                  marginTop: 20,
                 }}
               >
                 <Column>Mês</Column>
@@ -157,22 +162,33 @@ export default function Home() {
                 <Column>FOREX</Column>
                 <Column>Status</Column>
               </View>
-              <View style={{padding: 10}}>
+              <View>
                 {finance.progress.map(({ name, CDI, Forex, status }) => (
                   <View
                     key={uuid.v4()}
                     style={{
                       flexDirection: "row",
-                      marginTop: 10,
-                      marginBottom: 10
+                      paddingTop: 15,
+                      paddingBottom: 15,
+                      borderBottomWidth: 1,
+                      borderColor: THEME.COLORS.BLACK_LIGHT
                     }}
                   >
                     <RowText>{name}</RowText>
-                    <RowText>{showData ? CDI : "******"}</RowText>
-                    <RowText>{showData ? Forex : "******"}</RowText>
+                    <RowText>{showData ? parseFloat(CDI).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }) : "******"}</RowText>
+                    <RowText>{showData ? parseFloat(Forex).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }) : "******"}</RowText>
                     <RowText
                       style={{
-                        color: status === "progress" ? "#F7C548" : THEME.COLORS.SUCCESS,
+                        color:
+                          status === "progress"
+                            ? THEME.COLORS.ALERT
+                            : THEME.COLORS.SUCCESS,
                       }}
                     >
                       {status === "progress" ? "Pendente" : "Concluído"}
@@ -185,37 +201,37 @@ export default function Home() {
         ) : (
           <NativeBaseProvider>
             <VStack w="70%" space={3} mt={50} rounded="md">
-              <Skeleton h="10" w="70%" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
+              <Skeleton h="10" w="70%" startColor={THEME.COLORS.BLACK_LIGHT} />
+              <Skeleton h="10" startColor={THEME.COLORS.BLACK_LIGHT} />
             </VStack>
             <HStack mt={50} w="100%" space={5}>
               <Skeleton
                 size="180"
                 rounded="full"
-                startColor={THEME.COLORS.CARDS}
+                startColor={THEME.COLORS.BLACK_LIGHT}
               />
               <VStack w="80%" space={3} overflow="hidden" rounded="md">
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
+                <Skeleton h="5" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="5" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="5" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="5" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="5" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="5" startColor={THEME.COLORS.BLACK_LIGHT} />
               </VStack>
             </HStack>
             <VStack mt={50} w="100%">
               <Skeleton
                 w="100%"
                 h="350"
-                startColor={THEME.COLORS.CARDS}
+                startColor={THEME.COLORS.BLACK_LIGHT}
                 rounded="md"
               />
             </VStack>
             <VStack mt={50} w="100%" space={3} overflow="hidden" rounded="md">
-              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
+              <Skeleton h="10" startColor={THEME.COLORS.BLACK_LIGHT} />
+              <Skeleton h="10" startColor={THEME.COLORS.BLACK_LIGHT} />
+              <Skeleton h="10" startColor={THEME.COLORS.BLACK_LIGHT} />
+              <Skeleton h="10" startColor={THEME.COLORS.BLACK_LIGHT} />
             </VStack>
           </NativeBaseProvider>
         )}

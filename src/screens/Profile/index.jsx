@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Center, NativeBaseProvider, Skeleton, VStack } from "native-base";
+import { Box, Center, NativeBaseProvider, Skeleton, VStack } from "native-base";
 import { Feather } from '@expo/vector-icons';
 import THEME from '../../theme';
 import { Context } from '../../context';
@@ -89,7 +89,8 @@ export default function Profile() {
   }, []);
 
   return (
-    <View style={{flex: "1", backgroundColor: THEME.COLORS.BACKGROUND}}>
+    <NativeBaseProvider>
+      <Box flex="1" backgroundColor={THEME.COLORS.BLACK}>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -101,18 +102,17 @@ export default function Profile() {
                 getUserData();
               }, 1000);
             }}
-            tintColor={THEME.COLORS.TEXT}
+            tintColor={THEME.COLORS.WHITE}
           />
         }
       >
-        <NativeBaseProvider>
-          <Center bg={THEME.COLORS.BACKGROUND} flex={1} alignItems="center" justifyContent="start">
+          <Center bg={THEME.COLORS.BLACK} flex={1} alignItems="center" justifyContent="start">
             {
               loading ? (
                 <Center w="100%">
                   <VStack w="80%" space={3} overflow="hidden" rounded="md" marginTop="50px">
-                    <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-                    <Skeleton m="auto" w="50%" h="5" startColor={THEME.COLORS.CARDS} />
+                    <Skeleton h="10" startColor={THEME.COLORS.BLACK_LIGHT} />
+                    <Skeleton m="auto" w="50%" h="5" startColor={THEME.COLORS.BLACK_LIGHT} />
                   </VStack>
                 </Center>
               ) : (
@@ -128,21 +128,21 @@ export default function Profile() {
                   show && (
                     <ListItem key={id} onPress={onPress}>
                       <View style={{flexDirection: "row", alignItems: "center"}}>
-                        <Feather name={icon} size={22} color={id === 4 ? THEME.COLORS.ALERT : "#f2f2f2"} />
-                        <Text style={{color: id === 4 ? THEME.COLORS.ALERT : "#f2f2f2", marginLeft: 10}}>{text}</Text>
+                        <Feather name={icon} size={25} color={id === 4 ? THEME.COLORS.RED : THEME.COLORS.WHITE} />
+                        <Text style={{color: id === 4 ? THEME.COLORS.RED : THEME.COLORS.WHITE, marginLeft: 10}}>{text}</Text>
                       </View>
                       {
                         id === 0 && 
                           <Switch
-                            trackColor={{false: THEME.COLORS.SECUNDARY, true: THEME.COLORS.SUCCESS}}
-                            thumbColor={isEnabled ? THEME.COLORS.TEXT : THEME.COLORS.TEXT}
-                            ios_backgroundColor={THEME.COLORS.SECUNDARY}
+                            trackColor={{false: THEME.COLORS.BLACK_LIGHT, true: THEME.COLORS.SUCCESS}}
+                            thumbColor={isEnabled ? THEME.COLORS.WHITE : THEME.COLORS.WHITE}
+                            ios_backgroundColor={THEME.COLORS.BLACK_LIGHT}
                             onValueChange={toggleSwitch}
                             value={isEnabled}
                           />
                       }
                       {
-                        (id !== 4 && id !== 0) && <Feather name="chevron-right" size={22} color="white"/>
+                        (id !== 4 && id !== 0) && <Feather name="chevron-right" size={22} color={THEME.COLORS.WHITE}/>
                       }
                     </ListItem>
                   )
@@ -150,8 +150,8 @@ export default function Profile() {
               }
             </View>
           </Center>
-        </NativeBaseProvider>
       </ScrollView>
-    </View>
+    </Box>
+        </NativeBaseProvider>
   )
 }

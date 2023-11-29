@@ -26,23 +26,23 @@ export default function ChangeEntry({ value, setValue, onPress, type, placeholde
             <Input
               variant="filled"
               size="md"
-              color={THEME.COLORS.TEXT}
-              backgroundColor={THEME.COLORS.CARDS}
+              color={THEME.COLORS.WHITE}
+              backgroundColor={THEME.COLORS.BLACK_LIGHT}
               placeholder={placeholder}
               borderColor={
                 alert.show
-                  ? THEME.COLORS.ALERT
+                  ? THEME.COLORS.RED
                   : "transparent"
               }
               padding={3}
               focusOutlineColor={
                 alert.show
-                  ? THEME.COLORS.ALERT
-                  : THEME.COLORS.SECUNDARY
+                  ? THEME.COLORS.RED
+                  : THEME.COLORS.BLACK_LIGHT
               }
               value={value}
               onChangeText={setValue}
-              placeholderTextColor={THEME.COLORS.SECUNDARY}
+              placeholderTextColor={THEME.COLORS.GRAY}
             />
             <FormControl.ErrorMessage
               leftIcon={<WarningOutlineIcon size="xs" />}
@@ -52,10 +52,10 @@ export default function ChangeEntry({ value, setValue, onPress, type, placeholde
           </FormControl>
           <Button
             mt="4"
-            backgroundColor={THEME.COLORS.PRIMARY}
+            backgroundColor={THEME.COLORS.BLUE}
             onPress={() => onPress()}
           >
-            {loading ? <Spinner color={THEME.COLORS.TEXT} /> : "Confirmar"}
+            {loading ? <Spinner color={THEME.COLORS.WHITE} /> : "Confirmar"}
           </Button>
         </VStack>
       </Center>

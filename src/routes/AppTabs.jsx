@@ -21,16 +21,16 @@ export default function AppTabs() {
     <Tab.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: THEME.COLORS.BACKGROUND,
+          backgroundColor: THEME.COLORS.BLACK,
           shadowOpacity: 0,
         },
-        headerTintColor: THEME.COLORS.TEXT,
+        headerTintColor: THEME.COLORS.WHITE,
         headerTitleStyle: {
           fontSize: 24
         },
         tabBarStyle: {
-          backgroundColor: THEME.COLORS.BACKGROUND,
-          borderTopColor: THEME.COLORS.BACKGROUND,
+          backgroundColor: THEME.COLORS.BLACK,
+          borderTopColor: THEME.COLORS.BLACK,
         },
         tabBarShowLabel: false,
         headerTitleAlign: "left",
@@ -43,35 +43,31 @@ export default function AppTabs() {
         options={{
           tabBarIcon: ({ size, focused }) => {
             if(focused) {
-              return <Feather name="bar-chart-2" size={size} color="#f2f2f2" />
+              return <Feather name="bar-chart-2" size={size} color={THEME.COLORS.WHITE} />
             }
 
-            return <Feather name="bar-chart-2" size={size} color="#505050" />
+            return <Feather name="bar-chart-2" size={size} color={THEME.COLORS.GRAY} />
           },
           tabBarLabel: ({ focused }) => {
             if(focused) {
-              return <Text style={{color: "#f2f2f2", fontSize: 14}}>Investimentos</Text>
+              return <Text style={{color: THEME.COLORS.WHITE, fontSize: 14}}>Investimentos</Text>
             }
 
-            return <Text style={{color: "#505050", fontSize: 14}}>Investimentos</Text>
+            return <Text style={{color: THEME.COLORS.GRAY, fontSize: 14}}>Investimentos</Text>
           },
           headerRight: () => (
             <View
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                borderWidth: 2,
-                borderColor: THEME.COLORS.CARDS,
-                borderRadius: 50,
-                padding: 5,
                 marginRight: 10
               }}
             >
               <Ionicons
                 onPress={() => setShowData((prev) => !prev)}
                 name={showData ? "ios-eye-outline" : "ios-eye-off-outline"}
-                size={26}
-                color="#f2f2f2"
+                size={30}
+                color={THEME.COLORS.GRAY}
               />
             </View>
           )
@@ -83,19 +79,18 @@ export default function AppTabs() {
         options={{
           tabBarIcon: ({ size, focused }) => {
             if(focused) {
-              return<Ionicons name="ios-cash-outline" size={size} color="#f2f2f2" />
+              return<Ionicons name="ios-cash-outline" size={size} color={THEME.COLORS.WHITE} />
             }
 
-            return <Ionicons name="ios-cash-outline" size={size} color="#505050" />
+            return <Ionicons name="ios-cash-outline" size={size} color={THEME.COLORS.GRAY} />
           },
           tabBarLabel: ({ focused}) => {
             if(focused) {
-              return <Text style={{color: "#f2f2f2", fontSize: 14}}>Perfil</Text>
+              return <Text style={{color: THEME.COLORS.WHITE, fontSize: 14}}>Perfil</Text>
             }
 
-            return <Text style={{color: "#505050", fontSize: 14}}>Perfil</Text>
+            return <Text style={{color: THEME.COLORS.GRAY, fontSize: 14}}>Perfil</Text>
           },
-          headerShown: true
         }}
       />
       <Tab.Screen
@@ -104,17 +99,17 @@ export default function AppTabs() {
         options={{
           tabBarIcon: ({ size, focused }) => {
             if(focused) {
-              return <FontAwesome name="newspaper-o" size={size} color="#f2f2f2" />
+              return <FontAwesome name="newspaper-o" size={size} color={THEME.COLORS.WHITE} />
             }
 
-            return <FontAwesome name="newspaper-o" size={size} color="#505050" />
+            return <FontAwesome name="newspaper-o" size={size} color={THEME.COLORS.GRAY} />
           },
           tabBarLabel: ({ focused}) => {
             if(focused) {
-              return <Text style={{color: "#f2f2f2", fontSize: 14}}>News</Text>
+              return <Text style={{color: THEME.COLORS.WHITE, fontSize: 14}}>News</Text>
             }
 
-            return <Text style={{color: "#505050", fontSize: 14}}>News</Text>
+            return <Text style={{color: THEME.COLORS.GRAY, fontSize: 14}}>News</Text>
           }
         }}
       />
@@ -124,17 +119,17 @@ export default function AppTabs() {
         options={{
           tabBarIcon: ({ size, focused }) => {
             if(focused) {
-              return <Feather name="user" size={size} color="#f2f2f2" />
+              return <Feather name="user" size={size} color={THEME.COLORS.WHITE}/>
             }
 
-            return <Feather name="user" size={size} color="#505050" />
+            return <Feather name="user" size={size} color={THEME.COLORS.GRAY} />
           },
           tabBarLabel: ({ focused}) => {
             if(focused) {
-              return <Text style={{color: "#f2f2f2", fontSize: 14}}>Perfil</Text>
+              return <Text style={{color: THEME.COLORS.WHITE, fontSize: 14}}>Perfil</Text>
             }
 
-            return <Text style={{color: "#505050", fontSize: 14}}>Perfil</Text>
+            return <Text style={{color: THEME.COLORS.GRAY, fontSize: 14}}>Perfil</Text>
           },
           headerShown: false
         }}

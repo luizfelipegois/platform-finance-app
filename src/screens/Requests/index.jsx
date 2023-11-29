@@ -1,13 +1,10 @@
 import React, { useContext, useState } from "react";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { View, useWindowDimensions } from "react-native";
-import { Text, SubTitle } from "./Styled";
 import THEME from "../../theme";
 import { TextInputMask } from "react-native-masked-text";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 import {
   Actionsheet,
   useDisclose,
@@ -17,6 +14,9 @@ import {
   Center,
   VStack,
   Skeleton,
+  Box,
+  Text,
+  ScrollView,
 } from "native-base";
 import { Context } from "../../context";
 import { registerWithdrawal } from "../../services/user";
@@ -37,193 +37,193 @@ export default function Requests() {
 
   const openedRoute = () => {
     return (
-      <View style={{ flex: "1", backgroundColor: THEME.COLORS.BACKGROUND }}>
-        {loading ? (
-          <Center w="100%">
-            <VStack
-              w="100%"
-              space={4}
-              overflow="hidden"
-              rounded="md"
-              marginTop="20px"
-            >
-              <Skeleton h="20" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="20" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="20" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="20" startColor={THEME.COLORS.CARDS} />
-            </VStack>
-          </Center>
-        ) : withdrawals.find(({ status }) => status === "pending") ? (
-          withdrawals
-            .filter(({ status }) => status === "pending")
-            .map(({ id, value, date }) => (
-              <View
-                key={id}
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingTop: 25,
-                  paddingBottom: 25,
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  borderBottomWidth: 1,
-                  alignItems: "center",
-                  borderColor: THEME.COLORS.CARDS,
-                }}
+      <ScrollView backgroundColor={THEME.COLORS.BLACK}>
+        <Box flex="1" backgroundColor={THEME.COLORS.BLACK}>
+          {loading ? (
+            <Center w="100%">
+              <VStack
+                w="100%"
+                space={4}
+                overflow="hidden"
+                rounded="md"
+                marginTop="20px"
               >
-                <View style={{ flexDirection: "row" }}>
-                  <View
-                    style={{
-                      backgroundColor: "#F4F8DB",
-                      height: 35,
-                      width: 35,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 50,
-                    }}
-                  >
-                    <Feather
-                      name="arrow-up-right"
-                      size={20}
-                      color={THEME.COLORS.CARDS}
-                    />
-                  </View>
-                  <View style={{ marginLeft: 15 }}>
-                    <Text>{`R$ ${value}`}</Text>
-                    <Text
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+              </VStack>
+            </Center>
+          ) : withdrawals.find(({ status }) => status === "pending") ? (
+            withdrawals
+              .filter(({ status }) => status === "pending")
+              .map(({ id, value, date }) => (
+                <View
+                  key={id}
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingTop: 25,
+                    paddingBottom: 25,
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    borderBottomWidth: 1,
+                    alignItems: "center",
+                    borderColor: THEME.COLORS.BLACK_LIGHT,
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View
                       style={{
-                        color: THEME.COLORS.SECUNDARY,
-                        fontSize: 14,
-                        marginTop: 5,
+                        backgroundColor: THEME.COLORS.ALERT,
+                        height: 40,
+                        width: 40,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 50,
                       }}
                     >
-                      {date}
-                    </Text>
+                      <Feather
+                        name="arrow-up-right"
+                        size={25}
+                        color={THEME.COLORS.BLACK_LIGHT}
+                      />
+                    </View>
+                    <View style={{ marginLeft: 15 }}>
+                      <Text fontWeight={500} fontSize={THEME.SIZES.TEXT} color={THEME.COLORS.WHITE}>{`R$ ${value}`}</Text>
+                      <Text
+                        color={THEME.COLORS.GRAY}
+                        fontSize={14}
+                        marginTop={1}
+                        fontWeight={400}
+                      >
+                        {date}
+                      </Text>
+                    </View>
                   </View>
+                  <Text fontWeight={400} fontSize={THEME.SIZES.TEXT} color={THEME.COLORS.ALERT}>Processando</Text>
                 </View>
-                <Text style={{ color: THEME.COLORS.ALERT }}>Processando</Text>
-              </View>
-            ))
-        ) : (
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              flex: "1",
-            }}
-          >
-            <Ionicons
-              name="ios-newspaper-outline"
-              size={80}
-              color={THEME.COLORS.SECUNDARY}
-            />
-            <SubTitle style={{ width: "100%", textAlign: "center" }}>
-              Sem dados
-            </SubTitle>
-            <Text
-              style={{ textAlign: "center", color: THEME.COLORS.SECUNDARY }}
+              ))
+          ) : (
+            <Box
+              alignItems="center"
+              justifyContent="center"
+              mt={50}
             >
-              No momento você não possui levantamentos em andamento
-            </Text>
-          </View>
-        )}
-      </View>
+              <Ionicons
+                name="ios-newspaper-outline"
+                size={80}
+                color={THEME.COLORS.GRAY}
+              />
+              <Text color={THEME.COLORS.WHITE} fontSize={THEME.SIZES.SUBTITLE} textAlign="center" fontWeight="700">
+                Nenhum resgate encontrado
+              </Text>
+              <Text color={THEME.COLORS.GRAY} fontSize={THEME.SIZES.TEXT} fontWeight="400" w="80%" textAlign="center">
+                Para realizar um novo resgate clique no botão abaixo
+              </Text>
+            </Box>
+          )}
+        </Box>
+      </ScrollView>
     );
   };
 
   const historicRoute = () => {
     return (
-      <View style={{ flex: "1", backgroundColor: THEME.COLORS.BACKGROUND }}>
-        {loading ? (
-          <Center w="100%">
-            <VStack
-              w="100%"
-              space={4}
-              overflow="hidden"
-              rounded="md"
-              marginTop="20px"
-            >
-              <Skeleton h="20" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="20" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="20" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="20" startColor={THEME.COLORS.CARDS} />
-            </VStack>
-          </Center>
-        ) : withdrawals.find(({ status }) => status === "concluded") ? (
-          withdrawals
-            .filter(({ status }) => status === "concluded")
-            .map(({ id, value, date }) => (
-              <View
-                key={id}
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingTop: 25,
-                  paddingBottom: 25,
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  borderBottomWidth: 1,
-                  alignItems: "center",
-                  borderColor: THEME.COLORS.CARDS,
-                }}
+      <ScrollView backgroundColor={THEME.COLORS.BLACK}>
+        <Box flex="1" backgroundColor={THEME.COLORS.BLACK}>
+          {loading ? (
+            <Center w="100%">
+              <VStack
+                w="100%"
+                space={4}
+                overflow="hidden"
+                rounded="md"
+                marginTop="20px"
               >
-                <View style={{ flexDirection: "row" }}>
-                  <View
-                    style={{
-                      backgroundColor: "#F4F8DB",
-                      height: 35,
-                      width: 35,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 50,
-                    }}
-                  >
-                    <Feather
-                      name="arrow-up-right"
-                      size={20}
-                      color={THEME.COLORS.CARDS}
-                    />
-                  </View>
-                  <View style={{ marginLeft: 15 }}>
-                    <Text>{`R$ ${value}`}</Text>
-                    <Text
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
+              </VStack>
+            </Center>
+          ) : withdrawals.find(({ status }) => status === "concluded" || status === "refused") ? (
+            withdrawals
+              .filter(({ status }) => status === "concluded" || status === "refused")
+              .map(({ id, value, date, status }) => (
+                <View
+                  key={id}
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingTop: 25,
+                    paddingBottom: 25,
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    borderBottomWidth: 1,
+                    alignItems: "center",
+                    borderColor: THEME.COLORS.BLACK_LIGHT,
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View
                       style={{
-                        color: THEME.COLORS.SECUNDARY,
-                        fontSize: 14,
-                        marginTop: 5,
+                        backgroundColor: status === "concluded" ? THEME.COLORS.SUCCESS : THEME.COLORS.RED,
+                        height: 40,
+                        width: 40,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 50,
                       }}
                     >
-                      {date}
-                    </Text>
+                      <Feather
+                        name="arrow-up-right"
+                        size={25}
+                        color={THEME.COLORS.BLACK_LIGHT}
+                      />
+                    </View>
+                    <View style={{ marginLeft: 15 }}>
+                      <Text fontWeight={500} fontSize={THEME.SIZES.TEXT} color={THEME.COLORS.WHITE}>{`R$ ${value}`}</Text>
+                      <Text
+                        color={THEME.COLORS.GRAY}
+                        fontSize={14}
+                        marginTop={1}
+                        fontWeight={400}
+                      >
+                        {date}
+                      </Text>
+                    </View>
                   </View>
+                  <Text fontWeight={400} fontSize={THEME.SIZES.TEXT} color={status === "concluded" ? THEME.COLORS.SUCCESS : THEME.COLORS.RED}>{status === "concluded" ? "Concluído" : "Recusado"}</Text>
                 </View>
-                <Text style={{ color: THEME.COLORS.SUCCESS }}>Concluído</Text>
-              </View>
-            ))
-        ) : (
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              flex: "1",
-            }}
-          >
-            <MaterialCommunityIcons
-              name="history"
-              size={80}
-              color={THEME.COLORS.SECUNDARY}
-            />
-            <SubTitle style={{ width: "100%", textAlign: "center" }}>
-              Histórico vazio
-            </SubTitle>
-            <Text
-              style={{ textAlign: "center", color: THEME.COLORS.SECUNDARY }}
+              ))
+          ) : (
+            <Box
+              alignItems="center"
+              justifyContent="center"
+              mt={50}
             >
-              Você ainda não possui registros de levantamentos
-            </Text>
-          </View>
-        )}
-      </View>
+              <Ionicons
+                name="ios-newspaper-outline"
+                size={80}
+                color={THEME.COLORS.GRAY}
+              />
+              <Text color={THEME.COLORS.WHITE} fontSize={THEME.SIZES.SUBTITLE} fontWeight="700">
+                Histórico vazio
+              </Text>
+              <Text color={THEME.COLORS.GRAY} fontSize={THEME.SIZES.TEXT} fontWeight="400" w="80%" textAlign="center">
+                No momento você não possui histórico de levantamentos
+              </Text>
+            </Box>
+          )}
+        </Box>
+      </ScrollView>
     );
   };
 
@@ -235,9 +235,9 @@ export default function Requests() {
   const renderTabBar = (props) => (
     <TabBar
       {...props}
-      indicatorStyle={{ backgroundColor: THEME.COLORS.SECUNDARY }}
-      style={{ backgroundColor: THEME.COLORS.BACKGROUND }}
-      labelStyle={{ color: THEME.COLORS.TEXT, fontSize: 12 }}
+      indicatorStyle={{ backgroundColor: THEME.COLORS.GRAY }}
+      style={{ backgroundColor: THEME.COLORS.BLACK }}
+      labelStyle={{ color: THEME.COLORS.TEXT, fontSize: 14 }}
     />
   );
 
@@ -263,87 +263,91 @@ export default function Requests() {
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
       />
-      {finance && (
-        <Actionsheet isOpen={isOpen} onClose={onClose}>
-          <Actionsheet.Content h={600} backgroundColor="#101010">
-            <View
-              style={{
-                flex: "1",
-                width: "100%",
-                padding: 10,
-                paddingTop: 30,
-              }}
+      <Actionsheet isOpen={isOpen} onClose={onClose}>
+        <Actionsheet.Content h={600} backgroundColor={THEME.COLORS.BLACK}>
+          <Box w="100%" px={4} justifyContent="center">
+            <Text
+              w="80%"
+              fontSize={THEME.SIZES.SUBTITLE}
+              color={THEME.COLORS.WHITE}
+              fontWeight="500"
             >
-              <SubTitle>Qual é o valor você deseja retirar?</SubTitle>
-              <Text style={{ color: "#505050" }}>
-                {finance
-                  ? `Saldo disponível para retirada R$ ${finance.available}`
-                  : "Consultando saldo disponível para retirada..."}
+              Qual é o valor que você deseja retirar?
+            </Text>
+            <Text
+              mt={2}
+              w="100%"
+              fontSize={THEME.SIZES.TEXT}
+              color={THEME.COLORS.GRAY}
+              fontWeight="400"
+            >
+              {finance
+                ? `Saldo disponível para retirada R$ ${finance.available}`
+                : "Consultando saldo disponível para retirada..."}
+            </Text>
+            <Box
+              mt={6}
+              flexDirection="row"
+              borderColor={THEME.COLORS.GRAY}
+              borderBottomWidth={1}
+            >
+              <Text
+                fontSize={THEME.SIZES.TITLE}
+                color={THEME.COLORS.WHITE}
+                fontWeight="400"
+                mr={2}
+              >
+                R$
               </Text>
-              <View
+              <TextInputMask
+                type={"money"}
                 style={{
-                  borderColor: "#505050",
-                  borderBottomWidth: 1,
-                  padding: 1,
-                  fontSize: 32,
-                  flexDirection: "row",
-                  justifyContent: "start",
-                  alignItems: "center",
-                  marginTop: 30,
+                  fontSize: 30,
+                  width: "85%",
+                  color: THEME.COLORS.WHITE,
+                  fontWeight: "500"
                 }}
-              >
-                <Text
-                  style={{
-                    fontSize: 30,
-                    marginRight: 10,
-                  }}
-                >
-                  R$
-                </Text>
-                <TextInputMask
-                  type={"money"}
-                  style={{
-                    fontSize: 30,
-                    width: "85%",
-                    color: THEME.COLORS.TEXT,
-                  }}
-                  options={{
-                    precision: 2, // Número de casas decimais
-                    separator: ",", // Separador de milhares
-                    delimiter: ".", // Separador de decimal
-                    unit: "", // Símbolo da moeda ou unidade
-                    suffixUnit: "", // Sufixo da unidade
-                  }}
-                  value={moneyValue}
-                  onChangeText={setMoneyValue}
-                />
-              </View>
-              <Button
-                style={{ backgroundColor: THEME.COLORS.PRIMARY }}
-                mt={30}
-                size="lg"
-                isLoading={isLoading}
-                onPress={registerNewWithdrawal}
-                isDisabled={
-                  parseFloat(moneyValue.replace(/[,.]/g, "")) >
-                    parseFloat(finance.available.replace(/[,.]/g, "")) ||
-                  parseFloat(moneyValue.replace(/[,.]/g, "")) === 0
-                }
-              >
-                Confirmar
-              </Button>
-            </View>
-          </Actionsheet.Content>
-        </Actionsheet>
-      )}
+                options={{
+                  precision: 2,
+                  separator: ",",
+                  delimiter: ".",
+                  unit: "",
+                  suffixUnit: "",
+                }}
+                value={moneyValue}
+                onChangeText={setMoneyValue}
+              />
+            </Box>
+            <Button
+              style={{ backgroundColor: THEME.COLORS.BLUE }}
+              mt={30}
+              size="lg"
+              isLoading={isLoading}
+              onPress={registerNewWithdrawal}
+              isDisabled={
+                parseFloat(moneyValue ? moneyValue.replace(/[,.]/g, "") : null) >
+                  parseFloat(finance.available ? finance.available.replace(/[,.]/g, "") : null) ||
+                parseFloat(moneyValue ? moneyValue.replace(/[,.]/g, "") : null) === 0
+              }
+            >
+              Confirmar
+            </Button>
+          </Box>
+        </Actionsheet.Content>
+      </Actionsheet>
       <Button
         onPress={onOpen}
-        style={{
-          borderRadius: 0,
-          backgroundColor: THEME.COLORS.PRIMARY,
-        }}
-        startIcon={<Icon as={Ionicons} name="md-add-outline" size={26} />}
-      ></Button>
+        backgroundColor={THEME.COLORS.BLACK_LIGHT}
+        borderRadius={0}
+        size="lg"
+        startIcon={
+          <Feather
+            name="arrow-up-right"
+            size={25}
+            color={THEME.COLORS.WHITE}
+          />
+        }
+      >Resgatar</Button>
     </NativeBaseProvider>
   );
 }
