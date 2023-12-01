@@ -7,7 +7,6 @@ import ProfileStack from "./ProfileStack";
 import THEME from "../theme";
 import { Context } from "../context";
 import Requests from "../screens/Requests";
-import { Badge, Box, Button, NativeBaseProvider, VStack } from "native-base";
 
 const Tab = createBottomTabNavigator();
 
@@ -98,7 +97,7 @@ export default function AppTabs() {
             </View>
           ),
           headerStyle: {
-            backgroundColor: "#232428",
+            backgroundColor: THEME.COLORS.BLACK,
           },
         }}
       />

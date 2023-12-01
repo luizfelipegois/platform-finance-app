@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Container, Title, SubTitle, Text, Column, RowText } from "./Styled";
 import { RefreshControl, ScrollView, Dimensions, View } from "react-native";
 import { Context } from "../../context";
-import { PieChart } from "react-native-chart-kit";
 import uuid from "react-native-uuid";
 import THEME from "../../theme";
 import {
@@ -14,57 +13,66 @@ import {
   VStack,
 } from "native-base";
 import { Feather } from "@expo/vector-icons";
+import { VictoryPie } from "victory-native";
 
 export default function Home() {
   const { loading, getUserData, finance, showData } = useContext(Context);
   const [refreshing, setRefreshing] = useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
-
-  chartConfig = {
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-  };
 
   const detailsData = [
     {
       id: 0,
-      text: "Total de depósitos",
+      label: "Depósitos",
+      description: "Total de depósitos",
       value: finance.deposits
         ? parseFloat(finance.deposits.replace(/\./g, ""))
         : "",
+      icon: "arrow-down-left",
+      color: "#6001FF",
     },
     {
       id: 1,
-      text: "Total de retiradas",
+      label: "Levantamentos",
+      description: "Total de levantamentos",
       value: parseFloat(finance.withdrawals),
+      icon: "arrow-up-right",
+      color: "#FF4F4E",
     },
     {
       id: 2,
-      text: "Lucro Bruto",
+      label: "Lucro Bruto",
+      description: "Rendimento antes de taxas, partições e impostos",
       value:
         parseFloat(finance.balance) * 1000 -
         parseFloat(finance.deposits) * 1000,
+      icon: "trending-up",
+      color: "#248CD9",
     },
     {
       id: 3,
-      text: "Lucro Líquido",
+      label: "Lucro Líquido",
+      description: "Rendimento após taxas, partições e impostos",
       value:
         (parseFloat(finance.balance) * 1000 -
           parseFloat(finance.deposits) * 1000) *
         0.75,
+      icon: "dollar-sign",
+      color: "#FEBC2B",
     },
   ];
 
-  const handleScroll = (event) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    setScrollPosition(offsetY);
-  };
+  const total =
+  detailsData[0].value +
+  detailsData[1].value +
+  detailsData[2].value +
+  detailsData[3].value;
 
-  const getBackgroundColor = () => {
-    const threshold = 100;
-
-    return scrollPosition > threshold ? "#050505" : "#232428";
-  };
+  let data = [
+    { x: "", y: (detailsData[0].value * 100) / total / 100 },
+    { x: "", y: (detailsData[1].value * 100) / total / 100 },
+    { x: "", y: (detailsData[2].value * 100) / total / 100 },
+    { x: "", y: (detailsData[3].value * 100) / total / 100 },
+  ]
 
   return (
     <ScrollView
@@ -81,270 +89,275 @@ export default function Home() {
           tintColor={THEME.COLORS.WHITE}
         />
       }
-      style={{ backgroundColor: getBackgroundColor() }}
-      onScroll={handleScroll}
+      style={{ backgroundColor: THEME.COLORS.BLACK }}
       scrollEventThrottle={16}
     >
       <Container>
         <NativeBaseProvider>
           <View
             style={{
-              backgroundColor: "#232428",
-              height: 250,
+              alignItems: "center",
               justifyContent: "center",
-              borderBottomLeftRadius: 15,
-              borderBottomRightRadius: 15,
+              height: 150,
             }}
           >
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: 25,
-                height: 70,
-              }}
-            >
-              {finance.progress && !loading ? (
-                <>
-                  <Text
-                    style={{
-                      marginBottom: 5,
-                      fontWeight: 500,
-                      color: THEME.COLORS.GRAY,
-                    }}
-                  >
-                    Balanço
-                  </Text>
-                  <Title>
-                    {showData ? `R$ ${finance.balance}` : "R$ **********"}
-                  </Title>
-                </>
-              ) : (
-                <VStack w="100%" alignItems="center" space={3} rounded="md">
-                  <Skeleton
-                    h="5"
-                    w="50%"
-                    startColor={THEME.COLORS.BLACK_LIGHT}
-                  />
-                  <Skeleton h="10" w="70%" startColor={THEME.COLORS.BLACK_LIGHT} />
-                </VStack>
-              )}
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <View
-                style={{
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  backgroundColor="#2d2e33"
-                  borderRadius={50}
-                  h={60}
-                  w={60}
-                  mb={2}
-                >
-                  <Feather name="repeat" size={25} color={THEME.COLORS.WHITE} />
-                </Button>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 400,
-                    color: THEME.COLORS.WHITE,
-                  }}
-                >
-                  Currrency
-                </Text>
-              </View>
-              <View
-                style={{
-                  alignItems: "center",
-                  marginLeft: 40,
-                  marginRight: 40,
-                }}
-              >
-                <Button
-                  backgroundColor="#475AA8"
-                  borderRadius={50}
-                  h={60}
-                  w={60}
-                  mb={2}
-                >
-                  <Feather
-                    name="arrow-down-left"
-                    size={25}
-                    color={THEME.COLORS.WHITE}
-                  />
-                </Button>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 400,
-                    color: THEME.COLORS.WHITE,
-                  }}
-                >
-                  Depositar
-                </Text>
-              </View>
-              <View
-                style={{
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  backgroundColor="#2d2e33"
-                  borderRadius={50}
-                  h={60}
-                  w={60}
-                  mb={2}
-                >
-                  <Feather
-                    name="arrow-up-right"
-                    size={25}
-                    color={THEME.COLORS.WHITE}
-                  />
-                </Button>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 400,
-                    color: THEME.COLORS.WHITE,
-                  }}
-                >
-                  Resgatar
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View
-            style={{
-              paddingLeft: 15,
-              paddingRight: 15,
-              height: 300,
-              justifyContent: "center",
-              borderColor: THEME.COLORS.BLACK_LIGHT,
-              borderBottomWidth: 1,
-            }}
-          >
-            {finance.progress && !loading ? (
+            {finance.balance && !loading ? (
               <>
-                <SubTitle style={{ marginBottom: 10 }}>Porcentagens</SubTitle>
-                <PieChart
-                  data={[
-                    {
-                      name: "Depósito",
-                      population: parseFloat(finance.balance) * 1000,
-                      color: "#F7C548",
-                      legendFontColor: "silver",
-                      legendFontSize: 14,
-                    },
-                    {
-                      name: "Retiradas",
-                      population: parseFloat(finance.withdrawals) * 1000,
-                      color: "#A22522",
-                      legendFontColor: "silver",
-                      legendFontSize: 14,
-                    },
-                    {
-                      name: "Luiz",
-                      population:
-                        parseFloat(finance.balance) * 1000 -
-                        parseFloat(finance.deposits) * 1000 -
-                        (parseFloat(finance.balance) * 1000 -
-                          parseFloat(finance.deposits) * 1000) *
-                          0.75,
-                      color: "#505050",
-                      legendFontColor: "silver",
-                      legendFontSize: 14,
-                    },
-                    {
-                      name: "P/L",
-                      population:
-                        (parseFloat(finance.balance) * 1000 -
-                          parseFloat(finance.deposits) * 1000) *
-                        0.75,
-                      color: "#2A7F62",
-                      legendFontColor: "silver",
-                      legendFontSize: 14,
-                    },
-                  ]}
-                  width={Dimensions.get("window").width}
-                  height={200}
-                  chartConfig={chartConfig}
-                  accessor={"population"}
-                  backgroundColor="transparent"
-                />
+                <Text
+                  style={{
+                    marginBottom: 6,
+                    fontWeight: 500,
+                    color: THEME.COLORS.GRAY,
+                  }}
+                >
+                  Balanço
+                </Text>
+                <Title>
+                  {showData ? `R$ ${finance.balance}` : "**********"}
+                </Title>
               </>
             ) : (
-              <VStack w="100%">
+              <VStack w="100%" space={3} alignItems="center">
                 <Skeleton
-                  mb={5}
-                  w="60%"
                   h="10"
+                  w="40%"
                   startColor={THEME.COLORS.BLACK_LIGHT}
                 />
-                <HStack w="100%">
-                  <Skeleton
-                    size="160"
-                    rounded="full"
-                    startColor={THEME.COLORS.BLACK_LIGHT}
-                    mr={10}
-                  />
-                  <VStack space={3} w="80%">
-                    <Skeleton h="7" startColor={THEME.COLORS.BLACK_LIGHT} />
-                    <Skeleton h="7" startColor={THEME.COLORS.BLACK_LIGHT} />
-                    <Skeleton h="7" startColor={THEME.COLORS.BLACK_LIGHT} />
-                    <Skeleton h="7" startColor={THEME.COLORS.BLACK_LIGHT} />
-                  </VStack>
-                </HStack>
+                <Skeleton
+                  h="10"
+                  w="80%"
+                  startColor={THEME.COLORS.BLACK_LIGHT}
+                />
               </VStack>
             )}
           </View>
           <View
             style={{
-              paddingLeft: 15,
-              paddingRight: 15,
-              height: 400,
-              justifyContent: "center",
-              borderColor: THEME.COLORS.BLACK_LIGHT,
-              borderBottomWidth: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              height: 180,
             }}
           >
             {finance.progress && !loading ? (
               <>
-                <SubTitle style={{ marginBottom: 10 }}>Detalhes</SubTitle>
-                {detailsData.map(({ id, text, value }) => (
-                  <View style={{ marginTop: 20 }} key={id}>
-                    <Text style={{ color: THEME.COLORS.GRAY }}>{text}</Text>
-                    <Text
-                      style={{
-                        color: THEME.COLORS.WHITE,
-                        fontWeight: "500",
-                        marginTop: 5,
-                        fontSize: 18,
-                      }}
-                    >
-                      {showData
-                        ? value.toLocaleString("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          })
-                        : "R$ ********"}
-                    </Text>
-                  </View>
-                ))}
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: THEME.COLORS.BLACK_LIGHT,
+                    borderRadius: 5,
+                    width: Dimensions.get("window").width / 3 - 20,
+                    height: Dimensions.get("window").width / 3 - 20,
+                  }}
+                >
+                  <Button mb={2} backgroundColor="transparent">
+                    <Feather name="repeat" size={25} color="#909090" />
+                  </Button>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 400,
+                      color: "#909090",
+                    }}
+                  >
+                    Moedas
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: THEME.COLORS.BLACK_LIGHT,
+                    borderRadius: 5,
+                    width: Dimensions.get("window").width / 3 - 20,
+                    height: Dimensions.get("window").width / 3 - 20,
+                  }}
+                >
+                  <Button backgroundColor="transparent" mb={2}>
+                    <Feather name="arrow-down-left" size={25} color="#909090" />
+                  </Button>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 400,
+                      color: "#909090",
+                    }}
+                  >
+                    Depositar
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: THEME.COLORS.BLACK_LIGHT,
+                    borderRadius: 5,
+                    width: Dimensions.get("window").width / 3 - 20,
+                    height: Dimensions.get("window").width / 3 - 20,
+                  }}
+                >
+                  <Button backgroundColor="transparent" mb={2}>
+                    <Feather name="arrow-up-right" size={25} color="#909090" />
+                  </Button>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 400,
+                      color: "#909090",
+                    }}
+                  >
+                    Resgatar
+                  </Text>
+                </View>
               </>
             ) : (
-              <Skeleton
+              <HStack
                 w="100%"
-                h="300"
+                space={3}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Skeleton
+                  h={Dimensions.get("window").width / 3 - 20}
+                  w={Dimensions.get("window").width / 3 - 20}
+                  startColor={THEME.COLORS.BLACK_LIGHT}
+                />
+                <Skeleton
+                  h={Dimensions.get("window").width / 3 - 20}
+                  w={Dimensions.get("window").width / 3 - 20}
+                  startColor={THEME.COLORS.BLACK_LIGHT}
+                />
+                <Skeleton
+                  h={Dimensions.get("window").width / 3 - 20}
+                  w={Dimensions.get("window").width / 3 - 20}
+                  startColor={THEME.COLORS.BLACK_LIGHT}
+                />
+              </HStack>
+            )}
+          </View>
+          <View>
+            {finance.progress && !loading ? (
+              <SubTitle style={{ marginLeft: 15, marginBottom: 25 }}>
+                Detalhes
+              </SubTitle>
+            ) : (
+              <Skeleton
+                h={12}
+                w="40%"
+                ml={15}
+                marginBottom={25}
                 startColor={THEME.COLORS.BLACK_LIGHT}
-                rounded="md"
+              />
+            )}
+            {finance.progress && !loading ? (
+              <View
+                style={{
+                  backgroundColor: THEME.COLORS.BLACK_LIGHT,
+                  borderRadius: 30,
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: 50,
+                    height: 3,
+                    backgroundColor: THEME.COLORS.GRAY,
+                    marginTop: 10,
+                  }}
+                />
+                <VictoryPie
+                  width={Dimensions.get("window").width}
+                  height={Dimensions.get("window").width}
+                  colorScale={["#6001FF", "#FF4F4E", "#248CD9", "#FEBC2B"]}
+                  data={data}
+                  labels={({ datum }) => datum.x}
+                  innerRadius={120}
+                  animate={{
+                    duration: 2000,
+                  }}
+                />
+                <View style={{ width: "100%", alignItems: "center" }}>
+                  {detailsData.map(
+                    ({ id, description, value, icon, color, label }) => (
+                      <View
+                        style={{
+                          width: "90%",
+                          paddingBottom: 25,
+                          paddingTop: 25,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          borderColor: "#202020",
+                          borderBottomWidth: id !== 3 ? 1 : null,
+                          justifyContent: "space-between",
+                        }}
+                        key={id}
+                      >
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
+                          <View
+                            style={{
+                              backgroundColor: color,
+                              borderRadius: 50,
+                              height: 50,
+                              width: 50,
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Feather
+                              name={icon}
+                              size={25}
+                              color={THEME.COLORS.WHITE}
+                            />
+                          </View>
+                          <View style={{ marginLeft: 15, width: 150 }}>
+                            <Text
+                              style={{
+                                color: THEME.COLORS.WHITE,
+                                fontWeight: 500,
+                              }}
+                            >
+                              {label}
+                            </Text>
+                            <Text
+                              style={{
+                                color: THEME.COLORS.GRAY,
+                                marginTop: 5,
+                                fontWeight: 400,
+                                fontSize: 14,
+                              }}
+                            >
+                              {description}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text
+                          style={{
+                            color: THEME.COLORS.WHITE,
+                            fontWeight: "500",
+                          }}
+                        >
+                          {showData
+                            ? value.toLocaleString("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              })
+                            : "R$ ********"}
+                        </Text>
+                      </View>
+                    )
+                  )}
+                </View>
+              </View>
+            ) : (
+              <Skeleton
+                h={800}
+                w="100%"
+                rounded={50}
+                marginBottom={25}
+                startColor={THEME.COLORS.BLACK_LIGHT}
               />
             )}
           </View>
