@@ -9,10 +9,10 @@ export default function AuthStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: true,
-        headerTintColor: theme.COLORS.TEXT,
+        headerShown: false,
+        headerTintColor: theme.COLORS.WHITE,
         headerStyle: {
-          backgroundColor: theme.COLORS.BACKGROUND,
+          backgroundColor: theme.COLORS.BLACK,
         }
       }}
     >

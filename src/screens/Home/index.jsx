@@ -1,225 +1,460 @@
-import React, { useContext, useState } from "react";
-import {
-  Container,
-  Section,
-  Title,
-  SubTitle,
-  Text,
-  Column,
-  RowText,
-} from "./Styled";
-import { RefreshControl, ScrollView, View } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { Container, Title, SubTitle, Text, Column, RowText } from "./Styled";
+import { RefreshControl, ScrollView, Dimensions, View } from "react-native";
 import { Context } from "../../context";
-import { Dimensions } from "react-native";
-import { PieChart } from "react-native-chart-kit";
 import uuid from "react-native-uuid";
 import THEME from "../../theme";
 import {
+  Button,
   Center,
   HStack,
   NativeBaseProvider,
   Skeleton,
   VStack,
 } from "native-base";
+import { Feather } from "@expo/vector-icons";
+import { VictoryPie } from "victory-native";
 
 export default function Home() {
   const { loading, getUserData, finance, showData } = useContext(Context);
   const [refreshing, setRefreshing] = useState(false);
 
-  chartConfig = {
-    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-  };
-
   const detailsData = [
     {
       id: 0,
-      text: "Total de depósitos",
-      value: `R$ ${finance.deposits}`
+      label: "Depósitos",
+      description: "Total de depósitos",
+      value: finance.deposits
+        ? parseFloat(finance.deposits.replace(/\./g, ""))
+        : "",
+      icon: "arrow-down-left",
+      color: "#6001FF",
     },
     {
       id: 1,
-      text: "Total de retiradas",
-      value: `R$ ${finance.withdrawals}`
+      label: "Levantamentos",
+      description: "Total de levantamentos",
+      value: parseFloat(finance.withdrawals),
+      icon: "arrow-up-right",
+      color: "#FF4F4E",
     },
     {
       id: 2,
-      text: "Lucro Bruto",
-      value: `R$ ${
+      label: "Lucro Bruto",
+      description: "Rendimento antes de taxas, partições e impostos",
+      value:
         parseFloat(finance.balance) * 1000 -
-        parseFloat(finance.deposits) * 1000
-      }`
+        parseFloat(finance.deposits) * 1000,
+      icon: "trending-up",
+      color: "#248CD9",
     },
     {
       id: 3,
-      text: "Lucro Líquido",
-      value: `R$ ${
+      label: "Lucro Líquido",
+      description: "Rendimento após taxas, partições e impostos",
+      value:
         (parseFloat(finance.balance) * 1000 -
           parseFloat(finance.deposits) * 1000) *
-        0.75
-      }`
-    }
+        0.75,
+      icon: "dollar-sign",
+      color: "#FEBC2B",
+    },
+  ];
+
+  const total =
+  detailsData[0].value +
+  detailsData[1].value +
+  detailsData[2].value +
+  detailsData[3].value;
+
+  let data = [
+    { x: "", y: (detailsData[0].value * 100) / total / 100 },
+    { x: "", y: (detailsData[1].value * 100) / total / 100 },
+    { x: "", y: (detailsData[2].value * 100) / total / 100 },
+    { x: "", y: (detailsData[3].value * 100) / total / 100 },
   ]
 
   return (
-    <Container>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => {
-              setRefreshing(true);
-              setTimeout(() => {
-                setRefreshing(false);
-                getUserData();
-              }, 1000);
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => {
+            setRefreshing(true);
+            setTimeout(() => {
+              setRefreshing(false);
+              getUserData();
+            }, 1000);
+          }}
+          tintColor={THEME.COLORS.WHITE}
+        />
+      }
+      style={{ backgroundColor: THEME.COLORS.BLACK }}
+      scrollEventThrottle={16}
+    >
+      <Container>
+        <NativeBaseProvider>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              height: 150,
             }}
-            tintColor={THEME.COLORS.TEXT}
-          />
-        }
-      >
-        {finance.progress && !loading ? (
-          <>
-            <Section style={{marginTop: 30}}>
-              <Text style={{marginBottom: 5}}>Balanço</Text>
-              <Title>{showData ? `R$ ${finance.balance}` : "**********"}</Title>
-            </Section>
-            <PieChart
-              data={[
-                {
-                  name: "Depósito",
-                  population: parseFloat(finance.balance) * 1000,
-                  color: "#F7C548",
-                  legendFontColor: "silver",
-                  legendFontSize: 14,
-                },
-                {
-                  name: "Retiradas",
-                  population: parseFloat(finance.withdrawals) * 1000,
-                  color: "#A22522",
-                  legendFontColor: "silver",
-                  legendFontSize: 14,
-                },
-                {
-                  name: "Luiz",
-                  population:
-                    parseFloat(finance.balance) * 1000 -
-                    parseFloat(finance.deposits) * 1000 -
-                    (parseFloat(finance.balance) * 1000 -
-                      parseFloat(finance.deposits) * 1000) *
-                      0.75,
-                  color: "#505050",
-                  legendFontColor: "silver",
-                  legendFontSize: 14,
-                },
-                {
-                  name: "P/L",
-                  population:
-                    (parseFloat(finance.balance) * 1000 -
-                      parseFloat(finance.deposits) * 1000) *
-                    0.75,
-                  color: "#2A7F62",
-                  legendFontColor: "silver",
-                  legendFontSize: 14,
-                },
-              ]}
-              width={Dimensions.get("window").width}
-              height={220}
-              chartConfig={chartConfig}
-              accessor={"population"}
-              backgroundColor={"transparent"}
-              avoidFalseZero={false}
-            />
-            <Section>
-              <SubTitle>Detalhes</SubTitle>
-              {
-                detailsData.map(({id, text, value}) => (
-                  <View style={{marginTop: 20}} key={id}>
-                    <Text>{text}</Text>
-                    <Text style={{color: THEME.COLORS.TEXT, fontWeight: "500", marginTop: 5}}>{showData ? value : "R$ ********"}</Text>
-                  </View>
-                ))
-              }
-            </Section>
-            <View style={{marginTop: 25}}>
-              <SubTitle>Histórico</SubTitle>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: THEME.COLORS.CARDS,
-                  borderRadius: 5,
-                  padding: 10,
-                  marginTop: 20
-                }}
-              >
-                <Column>Mês</Column>
-                <Column>CDI</Column>
-                <Column>FOREX</Column>
-                <Column>Status</Column>
-              </View>
-              <View style={{padding: 10}}>
-                {finance.progress.map(({ name, CDI, Forex, status }) => (
-                  <View
-                    key={uuid.v4()}
+          >
+            {finance.balance && !loading ? (
+              <>
+                <Text
+                  style={{
+                    marginBottom: 6,
+                    fontWeight: 500,
+                    color: THEME.COLORS.GRAY,
+                  }}
+                >
+                  Balanço
+                </Text>
+                <Title>
+                  {showData ? `R$ ${finance.balance}` : "**********"}
+                </Title>
+              </>
+            ) : (
+              <VStack w="100%" space={3} alignItems="center">
+                <Skeleton
+                  h="10"
+                  w="40%"
+                  startColor={THEME.COLORS.BLACK_LIGHT}
+                />
+                <Skeleton
+                  h="10"
+                  w="80%"
+                  startColor={THEME.COLORS.BLACK_LIGHT}
+                />
+              </VStack>
+            )}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              height: 180,
+            }}
+          >
+            {finance.progress && !loading ? (
+              <>
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: THEME.COLORS.BLACK_LIGHT,
+                    borderRadius: 5,
+                    width: Dimensions.get("window").width / 3 - 20,
+                    height: Dimensions.get("window").width / 3 - 20,
+                  }}
+                >
+                  <Button mb={2} backgroundColor="transparent">
+                    <Feather name="repeat" size={25} color="#909090" />
+                  </Button>
+                  <Text
                     style={{
-                      flexDirection: "row",
-                      marginTop: 10,
-                      marginBottom: 10
+                      fontSize: 14,
+                      fontWeight: 400,
+                      color: "#909090",
                     }}
                   >
-                    <RowText>{name}</RowText>
-                    <RowText>{showData ? CDI : "******"}</RowText>
-                    <RowText>{showData ? Forex : "******"}</RowText>
-                    <RowText
+                    Moedas
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: THEME.COLORS.BLACK_LIGHT,
+                    borderRadius: 5,
+                    width: Dimensions.get("window").width / 3 - 20,
+                    height: Dimensions.get("window").width / 3 - 20,
+                  }}
+                >
+                  <Button backgroundColor="transparent" mb={2}>
+                    <Feather name="arrow-down-left" size={25} color="#909090" />
+                  </Button>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 400,
+                      color: "#909090",
+                    }}
+                  >
+                    Depositar
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: THEME.COLORS.BLACK_LIGHT,
+                    borderRadius: 5,
+                    width: Dimensions.get("window").width / 3 - 20,
+                    height: Dimensions.get("window").width / 3 - 20,
+                  }}
+                >
+                  <Button backgroundColor="transparent" mb={2}>
+                    <Feather name="arrow-up-right" size={25} color="#909090" />
+                  </Button>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 400,
+                      color: "#909090",
+                    }}
+                  >
+                    Resgatar
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <HStack
+                w="100%"
+                space={3}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Skeleton
+                  h={Dimensions.get("window").width / 3 - 20}
+                  w={Dimensions.get("window").width / 3 - 20}
+                  startColor={THEME.COLORS.BLACK_LIGHT}
+                />
+                <Skeleton
+                  h={Dimensions.get("window").width / 3 - 20}
+                  w={Dimensions.get("window").width / 3 - 20}
+                  startColor={THEME.COLORS.BLACK_LIGHT}
+                />
+                <Skeleton
+                  h={Dimensions.get("window").width / 3 - 20}
+                  w={Dimensions.get("window").width / 3 - 20}
+                  startColor={THEME.COLORS.BLACK_LIGHT}
+                />
+              </HStack>
+            )}
+          </View>
+          <View>
+            {finance.progress && !loading ? (
+              <SubTitle style={{ marginLeft: 15, marginBottom: 25 }}>
+                Detalhes
+              </SubTitle>
+            ) : (
+              <Skeleton
+                h={12}
+                w="40%"
+                ml={15}
+                marginBottom={25}
+                startColor={THEME.COLORS.BLACK_LIGHT}
+              />
+            )}
+            {finance.progress && !loading ? (
+              <View
+                style={{
+                  backgroundColor: THEME.COLORS.BLACK_LIGHT,
+                  borderRadius: 30,
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: 50,
+                    height: 3,
+                    backgroundColor: THEME.COLORS.GRAY,
+                    marginTop: 10,
+                  }}
+                />
+                <VictoryPie
+                  width={Dimensions.get("window").width}
+                  height={Dimensions.get("window").width}
+                  colorScale={["#6001FF", "#FF4F4E", "#248CD9", "#FEBC2B"]}
+                  data={data}
+                  labels={({ datum }) => datum.x}
+                  innerRadius={120}
+                  animate={{
+                    duration: 2000,
+                  }}
+                />
+                <View style={{ width: "100%", alignItems: "center" }}>
+                  {detailsData.map(
+                    ({ id, description, value, icon, color, label }) => (
+                      <View
+                        style={{
+                          width: "90%",
+                          paddingBottom: 25,
+                          paddingTop: 25,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          borderColor: "#202020",
+                          borderBottomWidth: id !== 3 ? 1 : null,
+                          justifyContent: "space-between",
+                        }}
+                        key={id}
+                      >
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
+                          <View
+                            style={{
+                              backgroundColor: color,
+                              borderRadius: 50,
+                              height: 50,
+                              width: 50,
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Feather
+                              name={icon}
+                              size={25}
+                              color={THEME.COLORS.WHITE}
+                            />
+                          </View>
+                          <View style={{ marginLeft: 15, width: 150 }}>
+                            <Text
+                              style={{
+                                color: THEME.COLORS.WHITE,
+                                fontWeight: 500,
+                              }}
+                            >
+                              {label}
+                            </Text>
+                            <Text
+                              style={{
+                                color: THEME.COLORS.GRAY,
+                                marginTop: 5,
+                                fontWeight: 400,
+                                fontSize: 14,
+                              }}
+                            >
+                              {description}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text
+                          style={{
+                            color: THEME.COLORS.WHITE,
+                            fontWeight: "500",
+                          }}
+                        >
+                          {showData
+                            ? value.toLocaleString("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              })
+                            : "R$ ********"}
+                        </Text>
+                      </View>
+                    )
+                  )}
+                </View>
+              </View>
+            ) : (
+              <Skeleton
+                h={800}
+                w="100%"
+                rounded={50}
+                marginBottom={25}
+                startColor={THEME.COLORS.BLACK_LIGHT}
+              />
+            )}
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              borderColor: THEME.COLORS.BLACK_LIGHT,
+              borderBottomWidth: 1,
+            }}
+          >
+            {finance.progress && !loading ? (
+              <>
+                <SubTitle
+                  style={{ marginBottom: 10, marginTop: 50, marginLeft: 15 }}
+                >
+                  Histórico
+                </SubTitle>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: THEME.COLORS.BLACK_LIGHT,
+                    borderRadius: 5,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    marginTop: 20,
+                  }}
+                >
+                  <Column>Mês</Column>
+                  <Column>CDI</Column>
+                  <Column>FOREX</Column>
+                  <Column>Status</Column>
+                </View>
+                <View>
+                  {finance.progress.map(({ name, CDI, Forex, status }) => (
+                    <View
+                      key={uuid.v4()}
                       style={{
-                        color: status === "progress" ? "#F7C548" : THEME.COLORS.SUCCESS,
+                        flexDirection: "row",
+                        paddingTop: 15,
+                        paddingBottom: 15,
+                        borderBottomWidth: 1,
+                        borderColor: THEME.COLORS.BLACK_LIGHT,
                       }}
                     >
-                      {status === "progress" ? "Pendente" : "Concluído"}
-                    </RowText>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </>
-        ) : (
-          <NativeBaseProvider>
-            <VStack w="70%" space={3} mt={50} rounded="md">
-              <Skeleton h="10" w="70%" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-            </VStack>
-            <HStack mt={50} w="100%" space={5}>
-              <Skeleton
-                size="180"
-                rounded="full"
-                startColor={THEME.COLORS.CARDS}
-              />
-              <VStack w="80%" space={3} overflow="hidden" rounded="md">
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-                <Skeleton h="5" startColor={THEME.COLORS.CARDS} />
-              </VStack>
-            </HStack>
-            <VStack mt={50} w="100%">
-              <Skeleton
+                      <RowText>{name}</RowText>
+                      <RowText>
+                        {showData
+                          ? parseFloat(CDI).toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })
+                          : "******"}
+                      </RowText>
+                      <RowText>
+                        {showData
+                          ? parseFloat(Forex).toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })
+                          : "******"}
+                      </RowText>
+                      <RowText
+                        style={{
+                          color:
+                            status === "progress"
+                              ? THEME.COLORS.ALERT
+                              : THEME.COLORS.SUCCESS,
+                        }}
+                      >
+                        {status === "progress" ? "Pendente" : "Concluído"}
+                      </RowText>
+                    </View>
+                  ))}
+                </View>
+              </>
+            ) : (
+              <VStack
+                mt={50}
+                mb={50}
                 w="100%"
-                h="350"
-                startColor={THEME.COLORS.CARDS}
+                space={3}
+                overflow="hidden"
                 rounded="md"
-              />
-            </VStack>
-            <VStack mt={50} w="100%" space={3} overflow="hidden" rounded="md">
-              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-              <Skeleton h="10" startColor={THEME.COLORS.CARDS} />
-            </VStack>
-          </NativeBaseProvider>
-        )}
-      </ScrollView>
-    </Container>
+              >
+                <Skeleton
+                  h="10"
+                  w="30%"
+                  startColor={THEME.COLORS.BLACK_LIGHT}
+                />
+                <Skeleton h="10" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="10" startColor={THEME.COLORS.BLACK_LIGHT} />
+                <Skeleton h="10" startColor={THEME.COLORS.BLACK_LIGHT} />
+              </VStack>
+            )}
+          </View>
+        </NativeBaseProvider>
+      </Container>
+    </ScrollView>
   );
 }

@@ -1,12 +1,13 @@
 export default {
   COLORS: {
-    BACKGROUND: '#050505',
-    CARDS: '#101010',
-    PRIMARY: '#034078',
-    SECUNDARY: '#505050',
-    ALERT: '#CC2936',
-    SUCCESS: '#2A7F62',
-    TEXT: '#fdfdfd',
+    BLACK: '#050505',
+    BLACK_LIGHT: '#101010',
+    WHITE: '#fdfdfd',
+    GRAY: '#505050',
+    BLUE: '#005fd7',
+    RED: '#f99393',
+    ALERT: '#fffd93',
+    SUCCESS: '#c3ffb4',
   },
 
   FONTS: {
