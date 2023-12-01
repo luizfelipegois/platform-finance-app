@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { View, useWindowDimensions } from "react-native";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { View } from "react-native";
 import THEME from "../../theme";
 import { TextInputMask } from "react-native-masked-text";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,21 +20,16 @@ import {
 import { Context } from "../../context";
 import { registerWithdrawal } from "../../services/user";
 import { jwtDecode } from "jwt-decode";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 export default function Requests() {
-  const layout = useWindowDimensions();
-  const [index, setIndex] = useState(0);
   const [moneyValue, setMoneyValue] = useState("0,00");
   const [isLoading, setIsLoading] = useState(false);
-  const [routes] = useState([
-    { key: "opened", title: "Em Aberto" },
-    { key: "historic", title: "Histórico" },
-  ]);
   const { isOpen, onOpen, onClose, onToggle } = useDisclose();
   const { withdrawals, finance, tokenAuthentication, getUserData, loading } =
     useContext(Context);
 
-  const openedRoute = () => {
+  const OpenedRoute = () => {
     return (
       <ScrollView backgroundColor={THEME.COLORS.BLACK}>
         <Box flex="1" backgroundColor={THEME.COLORS.BLACK}>
@@ -78,7 +72,7 @@ export default function Requests() {
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <View
                       style={{
-                        backgroundColor: THEME.COLORS.ALERT,
+                        backgroundColor: THEME.COLORS.BLACK_LIGHT,
                         height: 40,
                         width: 40,
                         alignItems: "center",
@@ -89,11 +83,15 @@ export default function Requests() {
                       <Feather
                         name="arrow-up-right"
                         size={25}
-                        color={THEME.COLORS.BLACK_LIGHT}
+                        color={THEME.COLORS.WHITE}
                       />
                     </View>
                     <View style={{ marginLeft: 15 }}>
-                      <Text fontWeight={500} fontSize={THEME.SIZES.TEXT} color={THEME.COLORS.WHITE}>{`R$ ${value}`}</Text>
+                      <Text
+                        fontWeight={500}
+                        fontSize={THEME.SIZES.TEXT}
+                        color={THEME.COLORS.WHITE}
+                      >{`R$ ${value}`}</Text>
                       <Text
                         color={THEME.COLORS.GRAY}
                         fontSize={14}
@@ -104,24 +102,45 @@ export default function Requests() {
                       </Text>
                     </View>
                   </View>
-                  <Text fontWeight={400} fontSize={THEME.SIZES.TEXT} color={THEME.COLORS.ALERT}>Processando</Text>
+                  <View
+                    style={{
+                      backgroundColor: THEME.COLORS.ALERT,
+                      padding: 6,
+                      borderRadius: 50
+                    }}
+                  >
+                    <Text
+                      fontWeight={400}
+                      fontSize={14}
+                      color={THEME.COLORS.BLACK_LIGHT}
+                    >
+                      Processando
+                    </Text>
+                  </View>
                 </View>
               ))
           ) : (
-            <Box
-              alignItems="center"
-              justifyContent="center"
-              mt={50}
-            >
+            <Box alignItems="center" justifyContent="center" mt={50}>
               <Ionicons
                 name="ios-newspaper-outline"
                 size={80}
                 color={THEME.COLORS.GRAY}
               />
-              <Text color={THEME.COLORS.WHITE} fontSize={THEME.SIZES.SUBTITLE} textAlign="center" fontWeight="700">
+              <Text
+                color={THEME.COLORS.WHITE}
+                fontSize={THEME.SIZES.SUBTITLE}
+                textAlign="center"
+                fontWeight="700"
+              >
                 Nenhum resgate encontrado
               </Text>
-              <Text color={THEME.COLORS.GRAY} fontSize={THEME.SIZES.TEXT} fontWeight="400" w="80%" textAlign="center">
+              <Text
+                color={THEME.COLORS.GRAY}
+                fontSize={THEME.SIZES.TEXT}
+                fontWeight="400"
+                w="80%"
+                textAlign="center"
+              >
                 Para realizar um novo resgate clique no botão abaixo
               </Text>
             </Box>
@@ -131,7 +150,7 @@ export default function Requests() {
     );
   };
 
-  const historicRoute = () => {
+  const HistoricRoute = () => {
     return (
       <ScrollView backgroundColor={THEME.COLORS.BLACK}>
         <Box flex="1" backgroundColor={THEME.COLORS.BLACK}>
@@ -153,9 +172,13 @@ export default function Requests() {
                 <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
               </VStack>
             </Center>
-          ) : withdrawals.find(({ status }) => status === "concluded" || status === "refused") ? (
+          ) : withdrawals.find(
+              ({ status }) => status === "concluded" || status === "refused"
+            ) ? (
             withdrawals
-              .filter(({ status }) => status === "concluded" || status === "refused")
+              .filter(
+                ({ status }) => status === "concluded" || status === "refused"
+              )
               .map(({ id, value, date, status }) => (
                 <View
                   key={id}
@@ -174,7 +197,7 @@ export default function Requests() {
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <View
                       style={{
-                        backgroundColor: status === "concluded" ? THEME.COLORS.SUCCESS : THEME.COLORS.RED,
+                        backgroundColor: THEME.COLORS.BLACK_LIGHT,
                         height: 40,
                         width: 40,
                         alignItems: "center",
@@ -185,11 +208,15 @@ export default function Requests() {
                       <Feather
                         name="arrow-up-right"
                         size={25}
-                        color={THEME.COLORS.BLACK_LIGHT}
+                        color={THEME.COLORS.WHITE}
                       />
                     </View>
                     <View style={{ marginLeft: 15 }}>
-                      <Text fontWeight={500} fontSize={THEME.SIZES.TEXT} color={THEME.COLORS.WHITE}>{`R$ ${value}`}</Text>
+                      <Text
+                        fontWeight={500}
+                        fontSize={THEME.SIZES.TEXT}
+                        color={THEME.COLORS.WHITE}
+                      >{`R$ ${value}`}</Text>
                       <Text
                         color={THEME.COLORS.GRAY}
                         fontSize={14}
@@ -200,24 +227,47 @@ export default function Requests() {
                       </Text>
                     </View>
                   </View>
-                  <Text fontWeight={400} fontSize={THEME.SIZES.TEXT} color={status === "concluded" ? THEME.COLORS.SUCCESS : THEME.COLORS.RED}>{status === "concluded" ? "Concluído" : "Recusado"}</Text>
+                  <View
+                    style={{
+                      backgroundColor:  status === "concluded"
+                      ? THEME.COLORS.SUCCESS
+                      : THEME.COLORS.RED,
+                      padding: 6,
+                      borderRadius: 50
+                    }}
+                  >
+                    <Text
+                      fontWeight={400}
+                      fontSize={14}
+                      textDecoration="line-through"
+                      color={THEME.COLORS.BLACK_LIGHT}
+                    >
+                      {status === "concluded" ? "Concluído" : "Recusado"}
+                    </Text>
+                  </View>
                 </View>
               ))
           ) : (
-            <Box
-              alignItems="center"
-              justifyContent="center"
-              mt={50}
-            >
+            <Box alignItems="center" justifyContent="center" mt={50}>
               <Ionicons
                 name="ios-newspaper-outline"
                 size={80}
                 color={THEME.COLORS.GRAY}
               />
-              <Text color={THEME.COLORS.WHITE} fontSize={THEME.SIZES.SUBTITLE} fontWeight="700">
+              <Text
+                color={THEME.COLORS.WHITE}
+                fontSize={THEME.SIZES.SUBTITLE}
+                fontWeight="700"
+              >
                 Histórico vazio
               </Text>
-              <Text color={THEME.COLORS.GRAY} fontSize={THEME.SIZES.TEXT} fontWeight="400" w="80%" textAlign="center">
+              <Text
+                color={THEME.COLORS.GRAY}
+                fontSize={THEME.SIZES.TEXT}
+                fontWeight="400"
+                w="80%"
+                textAlign="center"
+              >
                 No momento você não possui histórico de levantamentos
               </Text>
             </Box>
@@ -226,20 +276,6 @@ export default function Requests() {
       </ScrollView>
     );
   };
-
-  const renderScene = SceneMap({
-    opened: openedRoute,
-    historic: historicRoute,
-  });
-
-  const renderTabBar = (props) => (
-    <TabBar
-      {...props}
-      indicatorStyle={{ backgroundColor: THEME.COLORS.GRAY }}
-      style={{ backgroundColor: THEME.COLORS.BLACK }}
-      labelStyle={{ color: THEME.COLORS.TEXT, fontSize: 14 }}
-    />
-  );
 
   async function registerNewWithdrawal() {
     setIsLoading(true);
@@ -251,18 +287,29 @@ export default function Requests() {
     if (!error) {
       getUserData();
       onToggle();
+      setMoneyValue("0,00");
     }
   }
 
+  const Tab = createMaterialTopTabNavigator();
+
   return (
     <NativeBaseProvider>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-        renderTabBar={renderTabBar}
-      />
+      <Tab.Navigator
+        screenOptions={{
+          tabBarActiveTintColor: THEME.COLORS.WHITE,
+          tabBarInactiveTintColor: THEME.COLORS.GRAY,
+          tabBarStyle: {
+            backgroundColor: THEME.COLORS.BLACK,
+          },
+          tabBarIndicatorStyle: {
+            backgroundColor: THEME.COLORS.GRAY,
+          },
+        }}
+      >
+        <Tab.Screen name="Em Aberto" component={OpenedRoute} />
+        <Tab.Screen name="Histórico" component={HistoricRoute} />
+      </Tab.Navigator>
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content h={600} backgroundColor={THEME.COLORS.BLACK}>
           <Box w="100%" px={4} justifyContent="center">
@@ -305,7 +352,7 @@ export default function Requests() {
                   fontSize: 30,
                   width: "85%",
                   color: THEME.COLORS.WHITE,
-                  fontWeight: "500"
+                  fontWeight: "500",
                 }}
                 options={{
                   precision: 2,
@@ -325,9 +372,17 @@ export default function Requests() {
               isLoading={isLoading}
               onPress={registerNewWithdrawal}
               isDisabled={
-                parseFloat(moneyValue ? moneyValue.replace(/[,.]/g, "") : null) >
-                  parseFloat(finance.available ? finance.available.replace(/[,.]/g, "") : null) ||
-                parseFloat(moneyValue ? moneyValue.replace(/[,.]/g, "") : null) === 0
+                parseFloat(
+                  moneyValue ? moneyValue.replace(/[,.]/g, "") : null
+                ) >
+                  parseFloat(
+                    finance.available
+                      ? finance.available.replace(/[,.]/g, "")
+                      : null
+                  ) ||
+                parseFloat(
+                  moneyValue ? moneyValue.replace(/[,.]/g, "") : null
+                ) === 0
               }
             >
               Confirmar
@@ -341,13 +396,11 @@ export default function Requests() {
         borderRadius={0}
         size="lg"
         startIcon={
-          <Feather
-            name="arrow-up-right"
-            size={25}
-            color={THEME.COLORS.WHITE}
-          />
+          <Feather name="arrow-up-right" size={25} color={THEME.COLORS.WHITE} />
         }
-      >Resgatar</Button>
+      >
+        Resgatar
+      </Button>
     </NativeBaseProvider>
   );
 }

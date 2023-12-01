@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "./Styled";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { ScrollView, useWindowDimensions } from "react-native";
+import { ScrollView, View, useWindowDimensions } from "react-native";
 import { getNews } from '../../services/news';
 import THEME from '../../theme';
 import CardNews from "../../components/CardNews";
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 import { Center, NativeBaseProvider, Skeleton, VStack } from "native-base";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 export default function News() {
-  const layout = useWindowDimensions();
+  // const layout = useWindowDimensions();
   const [investmentsNews, setInvestmentsNews] = useState([]);
   const [technologyNews, setTechnologyNews] = useState([]);
   const [economyNews, setEconomyNews] = useState([]);
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: 'investiments', title: 'Investimentos' },
-    { key: 'technology', title: 'Tecnologia' },
-    { key: 'economy', title: 'Economia' },
-  ]);
+  // const [index, setIndex] = useState(0);
+  // const [routes] = useState([
+  //   { key: 'investiments', title: 'Investimentos' },
+  //   { key: 'technology', title: 'Tecnologia' },
+  //   { key: 'economy', title: 'Economia' },
+  // ]);
 
-  const investimentsRoute = () => (
+  const InvestimentsRoute = () => (
     <Container>
-      {
+      {/* {
         investmentsNews.length !== 0 ? (
           <ScrollView>
             {
@@ -42,13 +42,13 @@ export default function News() {
             </Center>
           </NativeBaseProvider>
         )
-      }
+      } */}
     </Container>
   );
   
-  const technologyRoute = () => (
+  const TechnologyRoute = () => (
     <Container>
-      <ScrollView>
+      {/* <ScrollView>
       {
         technologyNews.length !== 0 ? (
           <ScrollView>
@@ -69,13 +69,13 @@ export default function News() {
           </NativeBaseProvider>
         )
       }
-      </ScrollView>
+      </ScrollView> */}
     </Container>
   );
 
-  const economyRoute = () => (
+  const EconomyRoute = () => (
     <Container>
-     <ScrollView>
+     {/* <ScrollView>
      {
         economyNews.length !== 0 ? (
           <ScrollView>
@@ -96,23 +96,8 @@ export default function News() {
           </NativeBaseProvider>
         )
       }
-      </ScrollView>
+      </ScrollView> */}
     </Container>
-  );
-
-  const renderScene = SceneMap({
-    investiments: investimentsRoute,
-    technology: technologyRoute,
-    economy: economyRoute,
-  });
-
-  const renderTabBar = props => (
-    <TabBar
-      {...props}
-      indicatorStyle={{ backgroundColor: THEME.COLORS.SECUNDARY }}
-      style={{ backgroundColor: THEME.COLORS.BACKGROUND }}
-      labelStyle={{color: THEME.COLORS.TEXT, fontSize: 12}}
-    />
   );
 
   async function getNewsData() {
@@ -133,18 +118,28 @@ export default function News() {
     }
   }
 
+  const Tab = createMaterialTopTabNavigator();
+
   useEffect(() => {
     getNewsData();
   }, [])
 
   return (
-    // <TabView
-    //   navigationState={{ index, routes }}
-    //   renderScene={renderScene}
-    //   onIndexChange={setIndex}
-    //   initialLayout={{ width: layout.width }}
-    //   renderTabBar={renderTabBar}
-    // />
-    <Container></Container>
+    <Tab.Navigator
+        screenOptions={{
+          tabBarActiveTintColor: THEME.COLORS.WHITE,
+          tabBarInactiveTintColor: THEME.COLORS.GRAY,
+          tabBarStyle: {
+            backgroundColor: THEME.COLORS.BLACK
+          },
+          tabBarIndicatorStyle: {
+            backgroundColor: THEME.COLORS.GRAY
+          }
+        }}
+      >
+        <Tab.Screen name="Investimentos" component={InvestimentsRoute} />
+        <Tab.Screen name="Tecnologia" component={TechnologyRoute} />
+        <Tab.Screen name="Econômia" component={EconomyRoute} />
+      </Tab.Navigator>
   )
 }

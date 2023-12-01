@@ -3,12 +3,6 @@ import styled from 'styled-components/native';
 export const Container = styled.View`
   background-color: ${({ theme }) => theme.COLORS.BLACK};
   flex: 1;
-  padding: 0 10px;
-`;
-
-export const Section = styled.View`
-  margin: 50px 0px;
-  align-items: flex-start;
 `;
 
 export const Title = styled.Text`
