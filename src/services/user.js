@@ -16,11 +16,12 @@ export async function userData(id, token) {
   }
 }
 
-export async function registerWithdrawal(id, token, request) {
+export async function registerWithdrawal(id, token, request, type) {
   try {
     const API_URL = `https://finance-platform-api.onrender.com/user/requests/${id}`;
     const data = {
-      request
+      request,
+      type
     }
     const response = await fetch(API_URL, {
       method: 'PUT',

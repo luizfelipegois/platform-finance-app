@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import {
   RefreshControl,
   ScrollView,
@@ -13,7 +13,7 @@ import {
   Box,
   Skeleton,
 } from "native-base";
-import { Feather, Ionicons } from "@expo/vector-icons/";
+import { Feather } from "@expo/vector-icons/";
 import { VictoryPie } from "victory-native";
 import uuid from "react-native-uuid";
 
@@ -90,19 +90,19 @@ export default function Home({ navigation }) {
   const financeActions = [
     {
       id: 0,
-      route: "",
+      route: "Mercados",
       icon: "trending-up",
       label: "Mercados",
     },
     {
       id: 1,
-      route: "",
+      route: "Depósitos/Levantamentos",
       icon: "arrow-down-left",
       label: "Depositar",
     },
     {
       id: 2,
-      route: "",
+      route: "Depósitos/Levantamentos",
       icon: "arrow-up-right",
       label: "Resgatar",
     },
@@ -168,6 +168,7 @@ export default function Home({ navigation }) {
             text={action.label}
             height={Dimensions.get("window").width / financeActions.length - 20}
             width={Dimensions.get("window").width / financeActions.length - 20}
+            onPressButton={() => navigation.navigate(action.route)}
           />
         ))
       ) : (
@@ -288,6 +289,7 @@ export default function Home({ navigation }) {
               height={40}
               width={80}
               backgroundColor={THEME.COLORS.BLACK}
+              onPressButton={() => navigation.navigate("Depósitos/Levantamentos")}
             />
           </>
         ) : (
@@ -364,6 +366,7 @@ export default function Home({ navigation }) {
               height={40}
               width={80}
               backgroundColor={THEME.COLORS.BLACK}
+              onPressButton={() => navigation.navigate("Mercados")}
             />
           </>
         ) : (
