@@ -6,19 +6,19 @@ export default {
     GRAY: '#505050',
     BLUE: '#005fd7',
     RED: '#f99393',
-    ALERT: '#fffd93',
-    SUCCESS: '#c3ffb4',
-  },
-
-  FONTS: {
-    REGULAR: 'Roboto_400Regular',
-    MEDIUM: 'Roboto_500Medium',
-    BOLD: 'Roboto_700Bold',
+    YELLOW: '#fffd93',
+    GREEN: '#c3ffb4',
   },
 
   SIZES: {
     TITLE: '32px',
     SUBTITLE: '24px',
     TEXT: '16px',
+  },
+
+  WEIGHT: {
+    BOLD: '700',
+    MEDIUM: '500',
+    REGULAR: '400',
   }
 }

@@ -1,281 +1,28 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { View } from "react-native";
-import THEME from "../../theme";
+import React, { useContext, useState } from "react";
 import { TextInputMask } from "react-native-masked-text";
-import { Ionicons } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
 import {
   Actionsheet,
   useDisclose,
   NativeBaseProvider,
-  Button,
-  Icon,
-  Center,
-  VStack,
-  Skeleton,
   Box,
   Text,
-  ScrollView,
+  HStack,
+  Button,
 } from "native-base";
 import { Context } from "../../context";
 import { registerWithdrawal } from "../../services/user";
 import { jwtDecode } from "jwt-decode";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import THEME from "../../theme";
+import { SecundaryButton } from "../../components/Buttons";
+import HistoryScreen from '../HistoryScreen';
+import OnOpenScreen from '../OnOpenScreen';
 
 export default function Requests() {
   const [moneyValue, setMoneyValue] = useState("0,00");
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose, onToggle } = useDisclose();
-  const { withdrawals, finance, tokenAuthentication, getUserData, loading } =
-    useContext(Context);
-
-  const OpenedRoute = () => {
-    return (
-      <ScrollView backgroundColor={THEME.COLORS.BLACK}>
-        <Box flex="1" backgroundColor={THEME.COLORS.BLACK}>
-          {loading ? (
-            <Center w="100%">
-              <VStack
-                w="100%"
-                space={4}
-                overflow="hidden"
-                rounded="md"
-                marginTop="20px"
-              >
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-              </VStack>
-            </Center>
-          ) : withdrawals.find(({ status }) => status === "pending") ? (
-            withdrawals
-              .filter(({ status }) => status === "pending")
-              .map(({ id, value, date }) => (
-                <View
-                  key={id}
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingTop: 25,
-                    paddingBottom: 25,
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    borderBottomWidth: 1,
-                    alignItems: "center",
-                    borderColor: THEME.COLORS.BLACK_LIGHT,
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <View
-                      style={{
-                        backgroundColor: THEME.COLORS.BLACK_LIGHT,
-                        height: 40,
-                        width: 40,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderRadius: 50,
-                      }}
-                    >
-                      <Feather
-                        name="arrow-up-right"
-                        size={25}
-                        color={THEME.COLORS.WHITE}
-                      />
-                    </View>
-                    <View style={{ marginLeft: 15 }}>
-                      <Text
-                        fontWeight={500}
-                        fontSize={THEME.SIZES.TEXT}
-                        color={THEME.COLORS.WHITE}
-                      >{`R$ ${value}`}</Text>
-                      <Text
-                        color={THEME.COLORS.GRAY}
-                        fontSize={14}
-                        marginTop={1}
-                        fontWeight={400}
-                      >
-                        {date}
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: THEME.COLORS.ALERT,
-                      padding: 6,
-                      borderRadius: 50
-                    }}
-                  >
-                    <Text
-                      fontWeight={400}
-                      fontSize={14}
-                      color={THEME.COLORS.BLACK_LIGHT}
-                    >
-                      Processando
-                    </Text>
-                  </View>
-                </View>
-              ))
-          ) : (
-            <Box alignItems="center" justifyContent="center" mt={50}>
-              <Ionicons
-                name="ios-newspaper-outline"
-                size={80}
-                color={THEME.COLORS.GRAY}
-              />
-              <Text
-                color={THEME.COLORS.WHITE}
-                fontSize={THEME.SIZES.SUBTITLE}
-                textAlign="center"
-                fontWeight="700"
-              >
-                Nenhum resgate encontrado
-              </Text>
-              <Text
-                color={THEME.COLORS.GRAY}
-                fontSize={THEME.SIZES.TEXT}
-                fontWeight="400"
-                w="80%"
-                textAlign="center"
-              >
-                Para realizar um novo resgate clique no botão abaixo
-              </Text>
-            </Box>
-          )}
-        </Box>
-      </ScrollView>
-    );
-  };
-
-  const HistoricRoute = () => {
-    return (
-      <ScrollView backgroundColor={THEME.COLORS.BLACK}>
-        <Box flex="1" backgroundColor={THEME.COLORS.BLACK}>
-          {loading ? (
-            <Center w="100%">
-              <VStack
-                w="100%"
-                space={4}
-                overflow="hidden"
-                rounded="md"
-                marginTop="20px"
-              >
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton h="20" startColor={THEME.COLORS.BLACK_LIGHT} />
-              </VStack>
-            </Center>
-          ) : withdrawals.find(
-              ({ status }) => status === "concluded" || status === "refused"
-            ) ? (
-            withdrawals
-              .filter(
-                ({ status }) => status === "concluded" || status === "refused"
-              )
-              .map(({ id, value, date, status }) => (
-                <View
-                  key={id}
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    paddingTop: 25,
-                    paddingBottom: 25,
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    borderBottomWidth: 1,
-                    alignItems: "center",
-                    borderColor: THEME.COLORS.BLACK_LIGHT,
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <View
-                      style={{
-                        backgroundColor: THEME.COLORS.BLACK_LIGHT,
-                        height: 40,
-                        width: 40,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderRadius: 50,
-                      }}
-                    >
-                      <Feather
-                        name="arrow-up-right"
-                        size={25}
-                        color={THEME.COLORS.WHITE}
-                      />
-                    </View>
-                    <View style={{ marginLeft: 15 }}>
-                      <Text
-                        fontWeight={500}
-                        fontSize={THEME.SIZES.TEXT}
-                        color={THEME.COLORS.WHITE}
-                      >{`R$ ${value}`}</Text>
-                      <Text
-                        color={THEME.COLORS.GRAY}
-                        fontSize={14}
-                        marginTop={1}
-                        fontWeight={400}
-                      >
-                        {date}
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor:  status === "concluded"
-                      ? THEME.COLORS.SUCCESS
-                      : THEME.COLORS.RED,
-                      padding: 6,
-                      borderRadius: 50
-                    }}
-                  >
-                    <Text
-                      fontWeight={400}
-                      fontSize={14}
-                      textDecoration="line-through"
-                      color={THEME.COLORS.BLACK_LIGHT}
-                    >
-                      {status === "concluded" ? "Concluído" : "Recusado"}
-                    </Text>
-                  </View>
-                </View>
-              ))
-          ) : (
-            <Box alignItems="center" justifyContent="center" mt={50}>
-              <Ionicons
-                name="ios-newspaper-outline"
-                size={80}
-                color={THEME.COLORS.GRAY}
-              />
-              <Text
-                color={THEME.COLORS.WHITE}
-                fontSize={THEME.SIZES.SUBTITLE}
-                fontWeight="700"
-              >
-                Histórico vazio
-              </Text>
-              <Text
-                color={THEME.COLORS.GRAY}
-                fontSize={THEME.SIZES.TEXT}
-                fontWeight="400"
-                w="80%"
-                textAlign="center"
-              >
-                No momento você não possui histórico de levantamentos
-              </Text>
-            </Box>
-          )}
-        </Box>
-      </ScrollView>
-    );
-  };
+  const { finance, tokenAuthentication, getUserData } = useContext(Context);
 
   async function registerNewWithdrawal() {
     setIsLoading(true);
@@ -307,8 +54,8 @@ export default function Requests() {
           },
         }}
       >
-        <Tab.Screen name="Em Aberto" component={OpenedRoute} />
-        <Tab.Screen name="Histórico" component={HistoricRoute} />
+        <Tab.Screen name="Em Aberto" component={OnOpenScreen} />
+        <Tab.Screen name="Histórico" component={HistoryScreen} />
       </Tab.Navigator>
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content h={600} backgroundColor={THEME.COLORS.BLACK}>
@@ -390,17 +137,20 @@ export default function Requests() {
           </Box>
         </Actionsheet.Content>
       </Actionsheet>
-      <Button
-        onPress={onOpen}
-        backgroundColor={THEME.COLORS.BLACK_LIGHT}
-        borderRadius={0}
-        size="lg"
-        startIcon={
-          <Feather name="arrow-up-right" size={25} color={THEME.COLORS.WHITE} />
-        }
-      >
-        Resgatar
-      </Button>
+      <HStack>
+        <SecundaryButton
+          text="Depositar"
+          borderRadius={0.1}
+          width="50%"
+          backgroundColor={THEME.COLORS.BLUE}
+        />
+        <SecundaryButton
+          text="Resgatar"
+          borderRadius={0.1}
+          onPressButton={onOpen}
+          width="50%"
+        />
+      </HStack>
     </NativeBaseProvider>
   );
-}
+};

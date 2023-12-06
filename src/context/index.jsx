@@ -1,9 +1,10 @@
 import { createContext, useEffect, useState } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { jwtDecode } from "jwt-decode"
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
-import { userData } from '../services/user';
+import { userData } from "../services/user";
 import { Alert } from "react-native";
+import { getLatestStocks } from "../services/currency";
 
 export const Context = createContext({});
 
@@ -12,17 +13,19 @@ export const Provider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({
     show: false,
-    message: '',
-    status: ''
+    message: null,
+    status: null,
+    inputType: null
   });
   const [user, setUser] = useState({});
   const [finance, setFinance] = useState({});
   const [withdrawals, setWithdrawals] = useState([]);
   const [isLocalAuth, setIsLocalAuth] = useState(true);
   const [showData, setShowData] = useState(false);
+  const [stocks, setStocks] = useState([]);
 
   async function loadFromStorage() {
-    const token = await AsyncStorage.getItem('tokenAuthentication');
+    const token = await AsyncStorage.getItem("tokenAuthentication");
     const status = await AsyncStorage.getItem("authenticantionActivated");
 
     if (token) {
@@ -38,7 +41,7 @@ export const Provider = ({ children }) => {
 
   function signOut() {
     setTokenAuthentication(null);
-    AsyncStorage.removeItem('tokenAuthentication');
+    AsyncStorage.removeItem("tokenAuthentication");
     setFinance({});
     setUser({});
   }
@@ -56,9 +59,22 @@ export const Provider = ({ children }) => {
       Alert.alert(response.message, "Usuario Nao Autenticado");
       signOut();
     } else {
-      setUser({name, email, phone});
+      setUser({ name, email, phone });
       setFinance(datas);
       setWithdrawals(requests);
+    }
+  }
+
+  async function getStocks() {
+    const data = await AsyncStorage.getItem('stocks');
+
+    if(data === null) {
+      const response = await getLatestStocks();
+  
+      await AsyncStorage.setItem('stocks', JSON.stringify(response));
+
+    } else {
+      setStocks(JSON.parse(data));
     }
   }
 
@@ -77,16 +93,15 @@ export const Provider = ({ children }) => {
     setIsLocalAuth,
     showData,
     setShowData,
-    withdrawals
+    withdrawals,
+    stocks
   };
 
   useEffect(() => {
     loadFromStorage();
+
+    getStocks();
   }, []);
 
-  return (
-    <Context.Provider value={values}>
-      {children}
-    </Context.Provider>
-  )
+  return <Context.Provider value={values}>{children}</Context.Provider>;
 };
