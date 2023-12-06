@@ -1,8 +1,8 @@
 import React from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import theme from "../theme";
-import { ChangeEmail, ChangePassword, ChangePhone } from '../screens/UserSettingsChange';
-import Profile from '../screens/Profile';
+import Investimentos from '../screens/Home';
+import Market from '../screens/Market';
 
 const Stack = createNativeStackNavigator();
 
@@ -10,7 +10,7 @@ export default function ProfileStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         headerTintColor: theme.COLORS.WHITE,
         headerStyle: {
           backgroundColor: theme.COLORS.BLACK,
@@ -21,10 +21,8 @@ export default function ProfileStack() {
         headerBackTitleVisible: false
       }}
     >
-      <Stack.Screen name="Configurações" component={ Profile } />
-      <Stack.Screen name="Alterar Email" component={ ChangeEmail } />
-      <Stack.Screen name="Alterar Senha" component={ ChangePassword } />
-      <Stack.Screen name="Alterar Phone" component={ ChangePhone } />
+      <Stack.Screen name="Investments" component={ Investimentos} />
+      <Stack.Screen name="Mercado" component={ Market } />
     </Stack.Navigator>
   )
 };

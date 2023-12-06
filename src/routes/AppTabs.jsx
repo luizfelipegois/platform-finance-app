@@ -2,11 +2,12 @@ import React, { useContext, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import screens from "../screens";
 import ProfileStack from "./ProfileStack";
 import THEME from "../theme";
 import { Context } from "../context";
 import Requests from "../screens/Requests";
+import News from "../screens/News";
+import HomeStack from '../routes/HomeStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -39,7 +40,7 @@ export default function AppTabs() {
     >
       <Tab.Screen
         name="Investimentos"
-        component={screens.Home}
+        component={HomeStack}
         options={{
           tabBarIcon: ({ size, focused }) => {
             if (focused) {
@@ -143,7 +144,7 @@ export default function AppTabs() {
       />
       <Tab.Screen
         name="Notícias"
-        component={screens.News}
+        component={News}
         options={{
           tabBarIcon: ({ size, focused }) => {
             if (focused) {

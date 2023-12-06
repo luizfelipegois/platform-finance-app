@@ -1,13 +1,66 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, NativeBaseProvider, Skeleton, VStack } from "native-base";
+import { Box, NativeBaseProvider, Skeleton, VStack, Switch } from "native-base";
 import { Feather } from "@expo/vector-icons";
-import THEME from "../../theme";
-import { Context } from "../../context";
-import { SubTitle, ListItem, Text } from "./Styled";
-import { Alert, ScrollView, Switch, View, RefreshControl } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { Alert, ScrollView, View, RefreshControl } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { ListItem } from "./Styled";
+import THEME from "../../theme";
+import { Context } from "../../context";
+import Text from "../../components/Text";
+import SubTitle from "../../components/SubTitle";
+
+const UserInfo = ({ loading, user }) => {
+  if (loading || !user.name) {
+    return (
+      <VStack w="100%" h={150} alignItems="center" justifyContent="center">
+        <Skeleton h="10" w="80%" startColor={THEME.COLORS.BLACK_LIGHT} />
+        <Skeleton h="5" w="80%" mt={5} startColor={THEME.COLORS.BLACK_LIGHT} />
+      </VStack>
+    );
+  }
+
+  return (
+    <>
+      <SubTitle text={user.name} />
+      <Text color={THEME.COLORS.GRAY} marginTop={5} text={user.email} />
+    </>
+  );
+};
+
+const ProfileListItem = ({ id, icon, text, onPress, show, isEnabled }) =>
+  show && (
+    <ListItem key={id} onPress={() => onPress && onPress()}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Feather
+          name={icon}
+          size={25}
+          color={id === 4 ? THEME.COLORS.RED : THEME.COLORS.WHITE}
+          marginRight={10}
+        />
+        <Text
+          fontWeight={500}
+          text={text}
+          color={id === 4 && THEME.COLORS.RED}
+        />
+      </View>
+      {id === 0 && (
+        <Switch
+          trackColor={{
+            false: THEME.COLORS.BLACK_LIGHT,
+            true: THEME.COLORS.GREEN,
+          }}
+          thumbColor={isEnabled ? THEME.COLORS.WHITE : THEME.COLORS.WHITE}
+          ios_backgroundColor={THEME.COLORS.BLACK_LIGHT}
+          value={isEnabled}
+        />
+      )}
+      {id !== 4 && id !== 0 && (
+        <Feather name="chevron-right" size={22} color={THEME.COLORS.WHITE} />
+      )}
+    </ListItem>
+  );
 
 export default function Profile() {
   const { signOut, user, loading, getUserData } = useContext(Context);
@@ -16,32 +69,34 @@ export default function Profile() {
   const [isEnabled, setIsEnabled] = useState(false);
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
+
   const datas = [
     {
       id: 0,
       icon: "key",
       text: `Ativar ${type}`,
       show: isCompatible,
+      onPress: () => toggleSwitch(),
     },
     {
       id: 1,
       icon: "at-sign",
       text: "Alterar Email",
-      onPress: user.email ? () => navigation.navigate("Alterar Email") : null,
+      onPress: () => navigateTo("Alterar Email", user.email),
       show: true,
     },
     {
       id: 2,
       icon: "lock",
       text: "Alterar Senha",
-      onPress: user.email ? () => navigation.navigate("Alterar Senha") : null,
+      onPress: () => navigateTo("Alterar Senha", user.email),
       show: true,
     },
     {
       id: 3,
       icon: "phone",
       text: "Alterar Phone",
-      onPress: user.email ? () => navigation.navigate("Alterar Phone") : null,
+      onPress: () => navigateTo("Alterar Phone", user.email),
       show: true,
     },
     {
@@ -53,7 +108,13 @@ export default function Profile() {
     },
   ];
 
-  async function verifyAvaiableAuthentication() {
+  const navigateTo = (screen, condition) => {
+    if (condition) {
+      navigation.navigate(screen);
+    }
+  };
+
+  const verifyAvailableAuthentication = async () => {
     const compatible = await LocalAuthentication.hasHardwareAsync();
     const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
     const typeArray = types.map(
@@ -62,9 +123,9 @@ export default function Profile() {
 
     if (compatible) setIsCompatible(compatible);
     if (typeArray) setType(typeArray[0]);
-  }
+  };
 
-  async function toggleSwitch() {
+  const toggleSwitch = async () => {
     const isBiometricEnrolled = await LocalAuthentication.isEnrolledAsync();
 
     if (!isBiometricEnrolled) {
@@ -73,26 +134,29 @@ export default function Profile() {
         "Antes de ativar essa função, verifique se o dispositivo possui alguma biometria cadastrada."
       );
     } else {
-      setIsEnabled((previousState) => !previousState);
+      setIsEnabled((prev) => !prev);
       await AsyncStorage.setItem(
-        "authenticantionActivated",
+        "authenticationActivated",
         JSON.stringify(!isEnabled)
       );
     }
-  }
+  };
 
-  async function checkAuthenticationStatus() {
-    const status = await AsyncStorage.getItem("authenticantionActivated");
+  const checkAuthenticationStatus = async () => {
+    const status = await AsyncStorage.getItem("authenticationActivated");
+    setIsEnabled(status === "true");
+  };
 
-    if (status === "true") {
-      setIsEnabled(true);
-    } else {
-      setIsEnabled(false);
-    }
-  }
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+      getUserData();
+    }, 1000);
+  };
 
   useEffect(() => {
-    verifyAvaiableAuthentication();
+    verifyAvailableAuthentication();
     checkAuthenticationStatus();
   }, []);
 
@@ -103,87 +167,24 @@ export default function Profile() {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={() => {
-                setRefreshing(true);
-                setTimeout(() => {
-                  setRefreshing(false);
-                  getUserData();
-                }, 1000);
-              }}
+              onRefresh={onRefresh}
               tintColor={THEME.COLORS.WHITE}
             />
           }
         >
-          <View style={{ alignItems: "center", height: 150, justifyContent: "center" }}>
-            {loading || !user.name ? (
-              <VStack
-                w="100%"
-                h={150}
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Skeleton h="10" w="80%" startColor={THEME.COLORS.BLACK_LIGHT} />
-                <Skeleton
-                  h="5"
-                  w="80%"
-                  mt={5}
-                  startColor={THEME.COLORS.BLACK_LIGHT}
-                />
-              </VStack>
-            ) : (
-              <>
-                <SubTitle>{user.name}</SubTitle>
-                <Text style={{ marginTop: 5 }}>{user.email}</Text>
-              </>
-            )}
+          <View
+            style={{
+              alignItems: "center",
+              height: 150,
+              justifyContent: "center",
+            }}
+          >
+            <UserInfo loading={loading} user={user} />
           </View>
           <View style={{ marginTop: 50, width: "100%" }}>
-            {datas.map(
-              ({ id, icon, text, onPress, show }) =>
-                show && (
-                  <ListItem key={id} onPress={onPress}>
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Feather
-                        name={icon}
-                        size={25}
-                        color={id === 4 ? THEME.COLORS.RED : THEME.COLORS.WHITE}
-                      />
-                      <Text
-                        style={{
-                          color:
-                            id === 4 ? THEME.COLORS.RED : THEME.COLORS.WHITE,
-                          marginLeft: 10,
-                        }}
-                      >
-                        {text}
-                      </Text>
-                    </View>
-                    {id === 0 && (
-                      <Switch
-                        trackColor={{
-                          false: THEME.COLORS.BLACK_LIGHT,
-                          true: THEME.COLORS.SUCCESS,
-                        }}
-                        thumbColor={
-                          isEnabled ? THEME.COLORS.WHITE : THEME.COLORS.WHITE
-                        }
-                        ios_backgroundColor={THEME.COLORS.BLACK_LIGHT}
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                      />
-                    )}
-                    {id !== 4 && id !== 0 && (
-                      <Feather
-                        name="chevron-right"
-                        size={22}
-                        color={THEME.COLORS.WHITE}
-                      />
-                    )}
-                  </ListItem>
-                )
-            )}
+            {datas.map((item) => (
+              <ProfileListItem key={item.id} isEnabled={isEnabled} {...item} />
+            ))}
           </View>
         </ScrollView>
       </Box>
