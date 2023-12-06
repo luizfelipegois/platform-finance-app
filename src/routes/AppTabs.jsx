@@ -103,7 +103,7 @@ export default function AppTabs() {
         }}
       />
       <Tab.Screen
-        name="Levantamentos"
+        name="Depósitos/Levantamentos"
         component={Requests}
         options={{
           tabBarIcon: ({ size, focused }) => {

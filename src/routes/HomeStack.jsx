@@ -22,7 +22,7 @@ export default function ProfileStack() {
       }}
     >
       <Stack.Screen name="Investments" component={ Investimentos} />
-      <Stack.Screen name="Mercado" component={ Market } />
+      <Stack.Screen name="Mercados" component={ Market } />
     </Stack.Navigator>
   )
 };
