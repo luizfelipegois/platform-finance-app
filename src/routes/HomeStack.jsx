@@ -6,7 +6,7 @@ import Market from '../screens/Market';
 
 const Stack = createNativeStackNavigator();
 
-export default function ProfileStack() {
+export default function HomeStack() {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -21,8 +21,8 @@ export default function ProfileStack() {
         headerBackTitleVisible: false
       }}
     >
-      <Stack.Screen name="Investments" component={ Investimentos} />
       <Stack.Screen name="Mercados" component={ Market } />
+      <Stack.Screen name="Investments" component={ Investimentos} />
     </Stack.Navigator>
   )
 };
