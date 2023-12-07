@@ -1,10 +1,10 @@
 import React from "react";
 import { Dimensions, View } from "react-native";
 import THEME from "../../theme";
-import { Feather } from "@expo/vector-icons";
 import Text from "../Text";
 
 export default function Stocks({ item, type }) {
+  console.log(item)
   return (
     <View
       style={{

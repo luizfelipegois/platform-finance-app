@@ -35,44 +35,6 @@ export default function Market() {
           marginTop: 20,
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            width: Dimensions.get("window").width - 30,
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-          }}
-        >
-          <Button
-            style={{
-              width: Dimensions.get("window").width / 4 - 15,
-            }}
-          >
-            <Text>Todos</Text>
-          </Button>
-          <Button
-            style={{
-              width: Dimensions.get("window").width / 4 - 15,
-            }}
-          >
-            <Text>Ações</Text>
-          </Button>
-          <Button
-            style={{
-              width: Dimensions.get("window").width / 4 - 15,
-            }}
-          >
-            <Text>Forex</Text>
-          </Button>
-          <Button
-            style={{
-              width: Dimensions.get("window").width / 4 - 15,
-            }}
-          >
-            <Text>Commodities</Text>
-          </Button>
-        </View>
         <View>
           {
             stocks.map((stock) => <Stocks key={uuidv4()} item={stock} width={Dimensions.get("window").width - 30}/>)

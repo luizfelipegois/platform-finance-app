@@ -6,7 +6,7 @@ import Market from '../screens/Market';
 
 const Stack = createNativeStackNavigator();
 
-export default function ProfileStack() {
+export default function HomeStack() {
   return (
     <Stack.Navigator
       screenOptions={{

@@ -24,6 +24,7 @@ export default function AppTabs() {
         headerStyle: {
           backgroundColor: THEME.COLORS.BLACK,
           shadowOpacity: 0,
+          height: 125
         },
         headerTintColor: THEME.COLORS.WHITE,
         headerTitleStyle: {
@@ -78,28 +79,39 @@ export default function AppTabs() {
           },
           headerRight: () => (
             <View style={{ flexDirection: "row" }}>
-              <Feather
-                name={showData ? "eye" : "eye-off"}
-                size={25}
-                color={THEME.COLORS.WHITE}
-                onPress={() => setShowData((prev) => !prev)}
+              <View
                 style={{
+                  backgroundColor: THEME.COLORS.BLACK,
+                  padding: 10,
+                  borderRadius: 10,
+                  marginRight: 5,
+                }}
+              >
+                <Feather
+                  name={showData ? "eye" : "eye-off"}
+                  size={25}
+                  color={THEME.COLORS.WHITE}
+                  onPress={() => setShowData((prev) => !prev)}
+                />
+              </View>
+              <View
+                style={{
+                  backgroundColor: THEME.COLORS.BLACK,
+                  padding: 10,
+                  borderRadius: 10,
                   marginRight: 24,
+                  position: "relative"
                 }}
-              />
-              <Feather
-                name="bell"
-                size={25}
-                color={THEME.COLORS.WHITE}
-                style={{
-                  marginRight: 16,
-                }}
-              />
+              >
+                <Feather
+                  name="bell"
+                  size={25}
+                  color={THEME.COLORS.WHITE}
+                />
+                <View style={{backgroundColor: THEME.COLORS.RED, height: 10, width: 10, borderRadius: 50, position: "absolute", top: 10, right: 10}}/>
+              </View>
             </View>
-          ),
-          headerStyle: {
-            backgroundColor: THEME.COLORS.BLACK,
-          },
+          )
         }}
       />
       <Tab.Screen
