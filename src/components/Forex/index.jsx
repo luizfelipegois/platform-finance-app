@@ -27,7 +27,6 @@ const CandlestickChart = ({ data , item, bezier }) => (
 );
 
 const Forex = ({ item }) => {
-  console.log(item);
   const chartData = {
     datasets: [{ data: item.map((x) => x.rate) }],
   };
