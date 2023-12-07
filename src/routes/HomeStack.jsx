@@ -21,8 +21,8 @@ export default function HomeStack() {
         headerBackTitleVisible: false
       }}
     >
-      <Stack.Screen name="Investments" component={ Investimentos} />
       <Stack.Screen name="Mercados" component={ Market } />
+      <Stack.Screen name="Investments" component={ Investimentos} />
     </Stack.Navigator>
   )
 };

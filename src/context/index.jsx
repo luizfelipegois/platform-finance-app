@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
+import "core-js/stable/atob";
 import { userData } from "../services/user";
 import { Alert } from "react-native";
 import { getLatestStocks } from "../services/currency";
@@ -14,7 +15,7 @@ export const Provider = ({ children }) => {
     show: false,
     message: null,
     status: null,
-    inputType: null,
+    inputType: null
   });
   const [user, setUser] = useState({});
   const [finance, setFinance] = useState({});
@@ -23,12 +24,12 @@ export const Provider = ({ children }) => {
   const [showData, setShowData] = useState(false);
   const [stocks, setStocks] = useState([]);
 
-  const loadFromStorage = async () => {
-    const storedToken = await AsyncStorage.getItem("tokenAuthentication");
+  async function loadFromStorage() {
+    const token = await AsyncStorage.getItem("tokenAuthentication");
     const status = await AsyncStorage.getItem("authenticantionActivated");
 
-    if (storedToken) {
-      setTokenAuthentication(JSON.parse(storedToken));
+    if (token) {
+      setTokenAuthentication(JSON.parse(token));
     } else {
       signOut();
     }
@@ -36,16 +37,16 @@ export const Provider = ({ children }) => {
     if (status === "true") {
       setIsLocalAuth(false);
     }
-  };
+  }
 
-  const signOut = () => {
+  function signOut() {
     setTokenAuthentication(null);
     AsyncStorage.removeItem("tokenAuthentication");
     setFinance({});
     setUser({});
-  };
+  }
 
-  const getUserData = async () => {
+  async function getUserData() {
     setLoading(true);
     const token = tokenAuthentication;
     const { id } = jwtDecode(token);
@@ -62,53 +63,20 @@ export const Provider = ({ children }) => {
       setFinance(datas);
       setWithdrawals(requests);
     }
-  };
+  }
 
-  const getStocks = async () => {
-    try {
-      const lastExecutionDate = await AsyncStorage.getItem("lastExecutionDate");
+  async function getStocks() {
+    const data = await AsyncStorage.getItem('stocks');
 
-      const currentDate = new Date();
+    if(data === null) {
+      const response = await getLatestStocks();
+  
+      await AsyncStorage.setItem('stocks', JSON.stringify(response));
 
-      if (
-        !lastExecutionDate ||
-        !isSameDay(new Date(lastExecutionDate), currentDate)
-      ) {
-        const response = await getLatestStocks();
-
-        await AsyncStorage.setItem("stocks", JSON.stringify(response));
-
-        await AsyncStorage.setItem(
-          "lastExecutionDate",
-          currentDate.toISOString()
-        );
-      } else {
-        const data = await AsyncStorage.getItem("stocks");
-        setStocks(JSON.parse(data));
-      }
-    } catch (error) {
-      console.error("Erro ao obter/atualizar os dados de estoque:", error);
+    } else {
+      setStocks(JSON.parse(data));
     }
-  };
-
-  const isSameDay = (date1, date2) => {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
-  };
-
-  useEffect(() => {
-    loadFromStorage();
-  }, []);
-
-  useEffect(() => {
-    if (tokenAuthentication) {
-      getUserData();
-      getStocks();
-    }
-  }, [tokenAuthentication]);
+  }
 
   const values = {
     tokenAuthentication,
@@ -126,8 +94,14 @@ export const Provider = ({ children }) => {
     showData,
     setShowData,
     withdrawals,
-    stocks,
+    stocks
   };
+
+  useEffect(() => {
+    loadFromStorage();
+
+    getStocks();
+  }, []);
 
   return <Context.Provider value={values}>{children}</Context.Provider>;
 };

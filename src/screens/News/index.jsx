@@ -121,7 +121,7 @@ export default function News() {
   const Tab = createMaterialTopTabNavigator();
 
   useEffect(() => {
-    getNewsData();
+    //getNewsData();
   }, [])
 
   return (
