@@ -18,8 +18,6 @@ export default function Market() {
 
   const renderContent = () => {
     switch (activeFilter) {
-      case "Todos":
-        return <View style={{ backgroundColor: THEME.COLORS.BLACK_LIGHT, flex: 1 }} />;
       case "Ações":
         return (
           <ScrollView
@@ -55,9 +53,9 @@ export default function Market() {
           </ScrollView>
         );
       case "Índices":
-        return <View style={{ backgroundColor: THEME.COLORS.YELLOW, flex: 1 }} />;
+        return <View style={{ backgroundColor: THEME.COLORS.BLACK, flex: 1 }} />;
       case "Forex":
-        return <View style={{ backgroundColor: THEME.COLORS.GREEN, flex: 1 }} />;
+        return <View style={{ backgroundColor: THEME.COLORS.BLACK, flex: 1 }} />;
       default:
         return null;
     }

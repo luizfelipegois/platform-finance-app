@@ -99,7 +99,7 @@ export default function AppTabs() {
                   backgroundColor: THEME.COLORS.BLACK,
                   padding: 10,
                   borderRadius: 10,
-                  marginRight: 24,
+                  marginRight: 10,
                   position: "relative"
                 }}
               >

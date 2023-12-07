@@ -4,7 +4,7 @@ import THEME from "../../theme";
 import { SecundaryButton } from "../../components/Buttons";
 
 const FilterBar = ({ activeFilter, onChangeFilter }) => {
-  const filters = ["Todos", "Ações", "Índices", "Forex"];
+  const filters = ["Ações", "Índices", "Forex"];
 
   return (
     <View
@@ -18,7 +18,7 @@ const FilterBar = ({ activeFilter, onChangeFilter }) => {
       {filters.map((filter) => (
         <SecundaryButton
           key={filter}
-          width={(Dimensions.get("window").width / 4) - 20}
+          width={(Dimensions.get("window").width / 3) - 20}
           text={filter}
           onPressButton={() => onChangeFilter(filter)}
           backgroundColor={activeFilter === filter ? THEME.COLORS.BLUE : THEME.COLORS.BLACK_LIGHT}
